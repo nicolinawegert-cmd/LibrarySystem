@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Core.Models;
+using Xunit;
 
 namespace LibrarySystem.Core.Models.Tests;
 
@@ -38,10 +39,6 @@ public class BookTests
         var book = new Book("978-91-0-012345-6", "Testbok", "Testförfattare", 2024);
 
         book.MarkAsBorrowed();
-
-        typeof(Book)
-        .GetProperty("IsAvailable")?
-        .SetValue(book, false);
 
         //Act
         var info = book.GetInfo();

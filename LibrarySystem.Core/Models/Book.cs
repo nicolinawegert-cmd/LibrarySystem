@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using LibrarySystem.Core.Models;
 
 namespace LibrarySystem.Core.Models;
@@ -18,10 +19,20 @@ public class Book
 
   // Initialize properties with constructor parameters
   public Book(string isbn, string title, string author, int publishedYear)
-  { 
+  {
     ISBN = isbn;
     Title = title;
     Author = author;
     PublishedYear = publishedYear;
+  }
+
+  internal void MarkAsBorrowed()
+  {
+    IsAvailable = false;
+  }
+  
+  internal void MarkAsReturned()
+  {
+    IsAvailable = true;
   }
 }
