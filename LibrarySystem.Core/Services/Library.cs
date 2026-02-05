@@ -7,6 +7,7 @@ namespace LibrarySystem.Core.Services
   public class Library
   {
     public BookCatalog Catalog { get; } = new();
+    public MemberRegistry Members { get; } = new();
 
   }
 }
