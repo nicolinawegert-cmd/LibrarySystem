@@ -24,5 +24,5 @@ public class Loan
     ReturnDate = returnDate;
   }
 
-  public bool IsOverdue => false;
+  public bool IsOverdue => !IsReturned && DateTime.UtcNow.Date > DueDate.Date;
 }
