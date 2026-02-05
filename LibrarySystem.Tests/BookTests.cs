@@ -31,5 +31,23 @@ public class BookTests
         Assert.Equal("Testbok av Testförfattare (2024) - Tillgänglig", info);
     }
 
+    [Fact]
+    public void GetInfo_ShouldShowBorrowed_WhenBookIsNotAvailable()
+    {
+        //Arrange
+        var book = new Book("978-91-0-012345-6", "Testbok", "Testförfattare", 2024);
+
+        book.MarkAsBorrowed();
+
+        typeof(Book)
+        .GetProperty("IsAvailable")?
+        .SetValue(book, false);
+
+        //Act
+        var info = book.GetInfo();
+
+        //Assert
+        Assert.Contains("Utlånad", info);
+    }
 
 }
