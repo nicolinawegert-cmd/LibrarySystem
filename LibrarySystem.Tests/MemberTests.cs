@@ -33,4 +33,18 @@ public class MemberTests
     // Assert
     Assert.Equal("test@example.com", member.Email);
   }
+
+  [Fact]
+  public void Constructor_ShouldSetMemberSince_ToNow()
+  {
+    // Arrange & Act
+    var before = DateTime.UtcNow;
+
+    var member = new Member("M001", "Testnamn", "test@example.com");
+
+    var after = DateTime.UtcNow;
+
+    // Assert
+    Assert.InRange(member.MemberSince, before, after);
+  }
 }
