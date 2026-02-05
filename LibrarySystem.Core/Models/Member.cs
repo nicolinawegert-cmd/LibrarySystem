@@ -8,7 +8,9 @@ public class Member
   public string Name { get; }
   public string Email { get; }
 
-  public DateTime MemberSince { get; } 
+  public DateTime MemberSince { get; }
+
+  public List<Book> BorrowedBooks { get; } = new();
 
   public Member(string memberID, string name, string email)
   {
