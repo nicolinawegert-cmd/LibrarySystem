@@ -6,10 +6,14 @@ public class Loan
 {
   public Book Book { get; }
   public Member Member { get; }
+  public DateTime LoanDate { get; }
+  public DateTime DueDate { get; }
   public Loan(Book book, Member member, DateTime loanDate, DateTime dueDate)
   {
     Book = book;
     Member = member;
+    LoanDate = loanDate;
+    DueDate = dueDate;
   }
   public bool IsReturned => ReturnDate is not null;
 
