@@ -47,4 +47,14 @@ public class MemberTests
     // Assert
     Assert.InRange(member.MemberSince, before, after);
   }
+
+  [Fact]
+  public void BorrowedBooks_ShouldBeEmpty_ForNewMember()
+  {
+    // Arrange & Act
+    var member = new Member("M001", "Testnamn", "test@example.com");
+
+    // Assert
+    Assert.Empty(member.BorrowedBooks);
+  }
 }
