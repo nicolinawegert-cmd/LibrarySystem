@@ -72,4 +72,22 @@ public class MemberTests
     Assert.Single(member.BorrowedBooks);
     Assert.Equal("B001", member.BorrowedBooks[0].ISBN);
   }
+
+  [Fact]
+  public void RemoveBorrowedBook_ShouldRemoveBookFromBorrowedBooks()
+  {
+    // Arrange
+    var member = new Member("M001", "Testnamn", "test@example.com");
+    var book = new Book("B001", "Testbok", "Testförfattare", 2020);
+
+    member.AddBorrowedBook(book);
+    Assert.Single(member.BorrowedBooks);
+
+    // Act
+    member.RemoveBorrowedBook(book);
+
+    // Assert
+    Assert.Empty(member.BorrowedBooks);
+  }
+
 }
