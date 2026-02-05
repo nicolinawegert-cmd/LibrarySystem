@@ -1,24 +1,31 @@
-using LibrarySystem.Core.Services;
 using LibrarySystem.Core.Models;
+using LibrarySystem.Core.Services;
+using Xunit;
 
-namespace LibrarySystem.Tests
+namespace LibrarySystem.Tests;
+
+public class LibraryCompositionTests
 {
-  public class LibraryCompositionTests
+  [Fact]
+  public void Library_ShouldExposeBookCatalog()
   {
-    [Fact]
-    public void Library_ShouldExposeServices()
-    {
-      // Arrange & Act
-      var library = new Library();
+    // Arrange & Act
+    var library = new Library();
 
-      // Assert
-      Assert.NotNull(library.Catalog);
-    }
+    // Assert
+    Assert.NotNull(library.Catalog);
   }
-}
 
-public partial class LibraryCompositionTests
-{
+  [Fact]
+  public void Library_ShouldExposeMemberRegistry()
+  {
+    // Arrange & Act
+    var library = new Library();
+
+    // Assert
+    Assert.NotNull(library.Members);
+  }
+
   [Fact]
   public void BookCatalog_ShouldAddBooks()
   {
@@ -31,6 +38,6 @@ public partial class LibraryCompositionTests
 
     // Assert
     Assert.Single(catalog.Books);
-    Assert.Equal("123", catalog.Books[0].ISBN); 
+    Assert.Equal("123", catalog.Books[0].ISBN);
   }
 }
