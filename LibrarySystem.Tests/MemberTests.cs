@@ -105,4 +105,20 @@ public class MemberTests
     Assert.Contains("test@example.com", info);
   }
 
+  [Fact]
+  public void GetInfo_ShouldIncludeBorrowedBookdCount()
+  {
+    // Arrange
+    var member = new Member("M001", "Testnamn", "test@example.com");
+    var book = new Book("B001", "Testbok 1", "Testförfattare", 2020);
+
+    member.AddBorrowedBook(book);
+
+    // Act
+    var info = member.GetInfo();
+
+    // Assert
+    Assert.Contains("1 lånad bok", info);
+  }
+
 }
