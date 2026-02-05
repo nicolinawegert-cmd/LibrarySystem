@@ -118,7 +118,7 @@ public class MemberTests
     var info = member.GetInfo();
 
     // Assert
-    Assert.Contains("1 lånad bok", info);
+    Assert.Contains("Lån: 1", info);
   }
 
 }

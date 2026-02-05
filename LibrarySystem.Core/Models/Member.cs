@@ -32,6 +32,6 @@ public class Member
 
   public string GetInfo()
   {
-    return "Testnamn (M001) - test@example.com";
+    return $"{Name} ({MemberID}) - {Email} | Lån: {BorrowedBooks.Count}";
   }
 }
