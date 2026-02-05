@@ -86,4 +86,18 @@ public class LoanTests
     // Act & Assert
     Assert.True(loan.IsOverdue);
   }
+
+  [Fact]
+  public void IsOverdue_ShouldBeFalse_WhenLoanIsReturned_EvenIfDueDateHasPassed()
+  {
+    // Arrange 
+    var book = new Book("123", "Testbok", "Testförfattare", 2020);
+    var member = new Member("M001", "Testmedlem", "test@example.com");
+    var loan = new Loan(book, member, DateTime.UtcNow.AddDays(-20), DateTime.UtcNow.AddDays(-1));
+
+    loan.MarkReturned(DateTime.UtcNow);
+
+    // Act & Assert
+    Assert.False(loan.IsOverdue);
+  }
 }
