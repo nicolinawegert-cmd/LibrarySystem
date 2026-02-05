@@ -1,4 +1,5 @@
 using LibrarySystem.Core.Services;
+using LibrarySystem.Core.Models;
 
 namespace LibrarySystem.Tests
 {
@@ -13,5 +14,23 @@ namespace LibrarySystem.Tests
       // Assert
       Assert.NotNull(library.Catalog);
     }
+  }
+}
+
+public partial class LibraryCompositionTests
+{
+  [Fact]
+  public void BookCatalog_ShouldAddBooks()
+  {
+    // Arrange
+    var catalog = new BookCatalog();
+    var book = new Book("123", "Testbok", "Testförfattare", 2024);
+
+    // Act
+    catalog.Add(book);
+
+    // Assert
+    Assert.Single(catalog.Books);
+    Assert.Equal("123", catalog.Books[0].ISBN); 
   }
 }
