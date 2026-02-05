@@ -8,6 +8,7 @@ public class Book
   public string Title { get; }
   public string Author { get; }
   public int PublishedYear { get; }
+  public bool IsAvailable { get; set; } = true;
   public Book(string isbn, string title, string author, int publishedYear)
   {
     ISBN = isbn;
