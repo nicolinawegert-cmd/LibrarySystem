@@ -8,5 +8,12 @@ public class Loan
   {
 
   }
-  public bool IsReturned => false;
+  public bool IsReturned => ReturnDate is not null;
+
+  public DateTime? ReturnDate { get; private set; }
+
+  public void MarkReturned(DateTime returnDate)
+  {
+    ReturnDate = returnDate;
+  }
 }
