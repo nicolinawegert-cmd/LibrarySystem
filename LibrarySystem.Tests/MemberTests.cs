@@ -121,4 +121,17 @@ public class MemberTests
     Assert.Contains("Lån: 1", info);
   }
 
+  [Fact]
+  public void GetInfo_ShouldIncludeMemberSinceDate()
+  {
+    // Arrange
+    var member = new Member("M001", "Testnamn", "test@example.com");
+
+    // Act
+    var info = member.GetInfo();
+
+    // Assert
+    Assert.Contains("Medlem sedan:", info);
+  }
+
 }
