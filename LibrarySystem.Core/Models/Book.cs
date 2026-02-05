@@ -2,15 +2,18 @@ using LibrarySystem.Core.Models;
 
 namespace LibrarySystem.Core.Models;
 
-public class Book
-{
+// Book class representing a book in the library system
+public class Book 
+{ 
   public string ISBN { get; }
-  public string Title { get; }
-  public string Author { get; }
-  public int PublishedYear { get; }
+  public string Title { get; private set; }
+  public string Author { get; private set; }
+  public int PublishedYear { get; private set; }
   public bool IsAvailable { get; set; } = true;
+
+  // Initialize properties with constructor parameters
   public Book(string isbn, string title, string author, int publishedYear)
-  {
+  { 
     ISBN = isbn;
     Title = title;
     Author = author;
