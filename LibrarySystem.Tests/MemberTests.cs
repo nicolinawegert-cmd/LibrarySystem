@@ -90,4 +90,19 @@ public class MemberTests
     Assert.Empty(member.BorrowedBooks);
   }
 
+  [Fact]
+  public void GetInfo_ShouldReturnFormattedMemberInfo()
+  {
+    // Arrange
+    var member = new Member("M001", "Testnamn", "test@example.com");
+
+    // Act
+    var info = member.GetInfo();
+
+    // Assert
+    Assert.Contains("Testnamn", info);
+    Assert.Contains("M001", info);
+    Assert.Contains("test@example.com", info);
+  }
+
 }
