@@ -29,4 +29,9 @@ public class Member
   {
     _borrowedBooks.Remove(book);
   }
+
+  public string GetInfo()
+  {
+    return "Testnamn (M001) - test@example.com";
+  }
 }
