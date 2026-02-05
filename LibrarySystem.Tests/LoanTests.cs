@@ -62,4 +62,16 @@ public class LoanTests
     Assert.Equal(loanDate, loan.LoanDate);
     Assert.Equal(dueDate, loan.DueDate);
   }
+
+  [Fact]
+  public void IsOverdue_ShouldBeFalse_WhenDueDateIsInTheFuture()
+  {
+    // Arrange 
+    var book = new Book("123", "Testbok", "Testförfattare", 2020);
+    var member = new Member("M001", "Testmedlem", "test@example.com");
+    var loan = new Loan(book, member, DateTime.UtcNow, DateTime.UtcNow.AddDays(14));
+
+    // Act & Assert
+    Assert.False(loan.IsOverdue);
+  }
 }
