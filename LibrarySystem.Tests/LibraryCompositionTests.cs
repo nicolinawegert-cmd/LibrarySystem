@@ -8,7 +8,7 @@ namespace LibrarySystem.Tests
     public void Library_ShouldExposeServices()
     {
       // Arrange & Act
-      var library = new LibraryCompositionTests();
+      var library = new Library();
 
       // Assert
       Assert.NotNull(library.Catalog);
