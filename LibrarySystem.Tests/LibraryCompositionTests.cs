@@ -40,4 +40,20 @@ public class LibraryCompositionTests
     Assert.Single(catalog.Books);
     Assert.Equal("123", catalog.Books[0].ISBN);
   }
+
+  [Fact]
+  public void MemberRegistry_ShouldAddAndFindMembersById()
+  {
+    // Arrange
+    var registry = new MemberRegistry();
+    var member = new Member("M001", "Testmedlem", "test@example.com");
+
+    // Act
+    registry.Add(member);
+    var found = registry.FindById("M001");
+
+    // Assert
+    Assert.NotNull(found);
+    Assert.Equal("M001", found!.MemberId);
+  }
 }
