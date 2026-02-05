@@ -24,4 +24,9 @@ public class Member
   {
     BorrowedBooks.Add(book);
   }
+  
+  public void RemoveBorrowedBook(Book book)
+  {
+    BorrowedBooks.Remove(book);
+  }
 }
