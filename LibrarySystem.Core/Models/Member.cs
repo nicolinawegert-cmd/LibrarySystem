@@ -8,10 +8,13 @@ public class Member
   public string Name { get; }
   public string Email { get; }
 
+  public DateTime MemberSince { get; } 
+
   public Member(string memberID, string name, string email)
   {
     MemberID = memberID;
     Name = name;
     Email = email;
+    MemberSince = DateTime.UtcNow;
   }
 }
