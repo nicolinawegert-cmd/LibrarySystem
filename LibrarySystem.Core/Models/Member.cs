@@ -10,8 +10,6 @@ public class Member
 
   public DateTime MemberSince { get; }
 
-  public List<Book> BorrowedBooks { get; } = new();
-
   public Member(string memberID, string name, string email)
   {
     MemberID = memberID;
@@ -20,13 +18,15 @@ public class Member
     MemberSince = DateTime.UtcNow;
   }
 
+  private readonly List<Book> _borrowedBooks = new();
+  public IReadOnlyList<Book> BorrowedBooks => _borrowedBooks;
   public void AddBorrowedBook(Book book)
   {
-    BorrowedBooks.Add(book);
+    _borrowedBooks.Add(book);
   }
-  
+
   public void RemoveBorrowedBook(Book book)
   {
-    BorrowedBooks.Remove(book);
+    _borrowedBooks.Remove(book);
   }
 }
