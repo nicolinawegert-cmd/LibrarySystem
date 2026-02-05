@@ -10,6 +10,10 @@ public class Book
   public string Author { get; private set; }
   public int PublishedYear { get; private set; }
   public bool IsAvailable { get; set; } = true;
+  public string GetInfo()
+  {
+    return "Testbok av Testförfattare (2024) - Tillgänglig";
+  }
 
   // Initialize properties with constructor parameters
   public Book(string isbn, string title, string author, int publishedYear)

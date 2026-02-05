@@ -28,7 +28,7 @@ public class BookTests
         var info = book.GetInfo();
 
         //Assert
-        Assert.Equal("Testbok by Testförfattare (2024) - ISBN: 978-91-0-012345-6", info);
+        Assert.Equal("Testbok av Testförfattare (2024) - Tillgänglig", info);
     }
 
 
