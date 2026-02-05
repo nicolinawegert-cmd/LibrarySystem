@@ -4,15 +4,15 @@ namespace LibrarySystem.Core.Models;
 
 public class Member
 {
-  public string MemberID { get; }
+  public string MemberId { get; }
   public string Name { get; }
   public string Email { get; }
 
   public DateTime MemberSince { get; }
 
-  public Member(string memberID, string name, string email)
+  public Member(string memberId, string name, string email)
   {
-    MemberID = memberID;
+    MemberId = memberId;
     Name = name;
     Email = email;
     MemberSince = DateTime.UtcNow;
@@ -32,6 +32,6 @@ public class Member
 
   public string GetInfo()
   {
-    return $"{Name} ({MemberID}) - {Email} | Lån: {BorrowedBooks.Count}";
+    return $"{Name} ({MemberId}) - {Email} | Medlem sedan: {MemberSince:yyyy-MM-dd} | Lån: {BorrowedBooks.Count}";
   }
 }
