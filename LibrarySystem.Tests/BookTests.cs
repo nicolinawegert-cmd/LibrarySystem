@@ -1,6 +1,6 @@
-﻿using LibrarySystem.Core;
+﻿using LibrarySystem.Core.Models;
 
-namespace LibrarySystem.Core.Tests;
+namespace LibrarySystem.Core.Models.Tests;
 
 public class BookTests
 {
@@ -14,7 +14,7 @@ public class BookTests
         Assert.Equal("978-91-0-012345-6", book.ISBN);
         Assert.Equal("Testbok", book.Title);
         Assert.Equal("Testförfattare", book.Author);
-        Assert.Equal(2024, book.PublicationYear);
+        Assert.Equal(2024, book.PublishedYear);
         Assert.True(book.IsAvailable);
     }
 }
