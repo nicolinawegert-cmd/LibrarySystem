@@ -33,3 +33,4 @@ public class MemberTests
     // Assert
     Assert.Equal("test@example.com", member.Email);
   }
+}
