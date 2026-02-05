@@ -22,4 +22,5 @@ public class MemberTests
 
     // Assert
     Assert.Equal("Testnamn", member.Name);
+  }
 }
