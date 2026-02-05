@@ -13,4 +13,13 @@ public class MemberTests
     // Assert
     Assert.Equal("M001", member.MemberID);
   }
+
+  [Fact]
+  public void Constructor_ShouldSetName()
+  {
+    // Arrange & Act
+    var member = new Member("M001", "Testnamn", "test@example.com");
+
+    // Assert
+    Assert.Equal("Testnamn", member.Name);
 }
