@@ -10,8 +10,8 @@ public class Loan
   public DateTime DueDate { get; }
   public Loan(Book book, Member member, DateTime loanDate, DateTime dueDate)
   {
-    Book = book;
-    Member = member;
+    Book = book ?? throw new ArgumentNullException(nameof(book));
+    Member = member ?? throw new ArgumentNullException(nameof(member));
     LoanDate = loanDate;
     DueDate = dueDate;
   }
