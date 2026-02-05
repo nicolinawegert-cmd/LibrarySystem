@@ -8,10 +8,10 @@ public class BookTests
     [Fact]
     public void Constructor_ShouldSetPropertiesCorrectly()
     {
-        //Arrange
+        // Arrange & Act
         var book = new Book("978-91-0-012345-6", "Testbok", "Testförfattare", 2024);
 
-        //Act & Assert
+        // Assert
         Assert.Equal("978-91-0-012345-6", book.ISBN);
         Assert.Equal("Testbok", book.Title);
         Assert.Equal("Testförfattare", book.Author);
