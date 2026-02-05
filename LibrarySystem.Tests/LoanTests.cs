@@ -45,4 +45,21 @@ public class LoanTests
     Assert.Equal(book, loan.Book);
     Assert.Equal(member, loan.Member);
   }
+
+  [Fact]
+  public void Constructor_ShouldSetLoanDateAndDueDate()
+  {
+    // Arrange 
+    var book = new Book("123", "Testbok", "Testförfattare", 2020);
+    var member = new Member("M001", "Testmedlem", "test@example.com");
+    var loanDate = DateTime.UtcNow;
+    var dueDate = loanDate.AddDays(14);
+
+    // Act
+    var loan = new Loan(book, member, loanDate, dueDate);
+
+    // Assert
+    Assert.Equal(loanDate, loan.LoanDate);
+    Assert.Equal(dueDate, loan.DueDate);
+  }
 }
