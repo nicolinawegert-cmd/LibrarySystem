@@ -57,4 +57,19 @@ public class MemberTests
     // Assert
     Assert.Empty(member.BorrowedBooks);
   }
+
+  [Fact]
+  public void AddBorrowedBook_ShouldAddBookToBorrowedBooks()
+  {
+    // Arrange
+    var member = new Member("M001", "Testnamn", "test@example.com");
+    var book = new Book("B001", "Testbok", "Testförfattare", 2020);
+
+    // Act
+    member.AddBorrowedBook(book);
+
+    // Assert
+    Assert.Single(member.BorrowedBooks);
+    Assert.Equal("B001", member.BorrowedBooks[0].ISBN);
+  }
 }
