@@ -12,7 +12,8 @@ public class Book
   public bool IsAvailable { get; set; } = true;
   public string GetInfo()
   {
-    return "Testbok av Testförfattare (2024) - Tillgänglig";
+    var status = IsAvailable ? "Tillgänglig" : "Utlånad";
+    return $"{Title} av {Author} ({PublishedYear}) - {status}";
   }
 
   // Initialize properties with constructor parameters
