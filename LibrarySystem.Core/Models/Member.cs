@@ -19,4 +19,9 @@ public class Member
     Email = email;
     MemberSince = DateTime.UtcNow;
   }
+
+  public void AddBorrowedBook(Book book)
+  {
+    BorrowedBooks.Add(book);
+  }
 }
