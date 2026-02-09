@@ -30,9 +30,14 @@ public class Book
   {
     IsAvailable = false;
   }
-  
+
   internal void MarkAsReturned()
   {
     IsAvailable = true;
+  }
+  
+  public bool Matches(string searchTerm)
+  {
+    return Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
   }
 }

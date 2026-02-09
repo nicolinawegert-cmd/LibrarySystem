@@ -13,7 +13,7 @@ public class SearchTests
   public void Book_Matches_ShouldFindByAuthor(string term, bool expected)
   {
     // Arrange
-    var book = new Book("123, Sagan om ringen J.R.R. Tolkien, 1954);");
+    var book = new Book("123", "Sagan om ringen", "J.R.R. Tolkien", 1954);
 
     // Act
     var result = book.Matches(term);
