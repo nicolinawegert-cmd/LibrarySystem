@@ -1,5 +1,5 @@
 namespace LibrarySystem.Core;
 public interface ISearchable
 {
-    bool MatchesQuery(string SearchTerm);
+    bool Matches(string SearchTerm);
 }
