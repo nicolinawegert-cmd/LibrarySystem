@@ -38,6 +38,13 @@ public class Book
   
   public bool Matches(string searchTerm)
   {
-    return Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
+    if (string.IsNullOrWhiteSpace(searchTerm))
+      return false;
+
+    var term = searchTerm.Trim();
+      
+    return Author.Contains(term, StringComparison.OrdinalIgnoreCase) || 
+            Title.Contains(term, StringComparison.OrdinalIgnoreCase) || 
+            ISBN.Contains(term, StringComparison.OrdinalIgnoreCase);
   }
 }
