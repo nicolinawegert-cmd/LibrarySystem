@@ -16,9 +16,13 @@ public class BookCatalog
   {
     return _books.Where(b => b.Matches(term));
   }
-
   public IEnumerable<Book> SortByTitle()
   {
     return _books.OrderBy(b => b.Title, StringComparer.OrdinalIgnoreCase);
   }
+  public IEnumerable<Book> SortByPublishedYear()
+  {
+    return _books.OrderBy(b => b.PublishedYear);
+  }
+
 }
