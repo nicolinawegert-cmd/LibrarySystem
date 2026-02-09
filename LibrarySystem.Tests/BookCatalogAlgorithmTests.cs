@@ -54,4 +54,21 @@ public class BookCatalogAlgorithmTests
     // Assert
     Assert.Equal(new[] { "alpha", "Beta", "Zoo" }, sorted);
   }
+
+  [Fact]
+  public void SortByPublishedYear_ShouldReturnAscendingOrder()
+  {
+    // Arrange
+    var catalog = new BookCatalog();
+    catalog.Add(new Book("1", "A", "X", 2005));
+    catalog.Add(new Book("2", "B", "X", 1999));
+    catalog.Add(new Book("3", "C", "X", 2010));
+
+    // Act
+    var sortedYears = catalog.SortByPublishedYear().Select(b => b.PublishedYear).ToList();
+
+    // Assert
+    Assert.Equal(new[] { 1999, 2005, 2010 }, sortedYears);
+  }
+
 }
