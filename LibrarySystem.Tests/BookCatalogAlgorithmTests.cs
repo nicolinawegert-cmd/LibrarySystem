@@ -49,7 +49,7 @@ public class BookCatalogAlgorithmTests
     catalog.Add(new Book("3", "Beta", "A", 2000));
 
     // Act
-    var sorted = catalog.SortByTitle().Select(base => base.Title).ToList();
+    var sorted = catalog.SortByTitle().Select(b => b.Title).ToList();
 
     // Assert
     Assert.Equal(new[] { "alpha", "Beta", "Zoo" }, sorted);
