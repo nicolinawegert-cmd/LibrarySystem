@@ -38,4 +38,20 @@ public class BookCatalogAlgorithmTests
     // Assert
     Assert.Empty(result);
   }
+
+  [Fact]
+  public void SortByTitle_ShouldReturnAlphabeticalOrder()
+  {
+    // Arrange
+    var catalog = new BookCatalog();
+    catalog.Add(new Book("1", "Zoo", "A", 2000));
+    catalog.Add(new Book("2", "alpha", "A", 2000));
+    catalog.Add(new Book("3", "Beta", "A", 2000));
+
+    // Act
+    var sorted = catalog.SortByTitle().Select(base => base.Title).ToList();
+
+    // Assert
+    Assert.Equal(new[] { "alpha", "Beta", "Zoo" }, sorted);
+  }
 }
