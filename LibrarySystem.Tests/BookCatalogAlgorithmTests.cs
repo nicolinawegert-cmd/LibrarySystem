@@ -23,4 +23,19 @@ public class BookCatalogAlgorithmTests
     Assert.All(result, b => Assert.Contains("Tolkien", b.Author));
   }
 
+  [Theory]
+  [InlineData("")]
+  [InlineData("  ")]
+  public void Search_ShouldReturnEmpty_WhenTermIsEmpty(string term)
+  {
+    // Arrange
+    var catalog = new BookCatalog();
+    catalog.Add(new Book("1", "Sagan om ringen", "J.R.R. Tolkien", 1954));
+
+    // Act
+    var result = catalog.Search(term).ToList();
+
+    // Assert
+    Assert.Empty(result);
+  }
 }
