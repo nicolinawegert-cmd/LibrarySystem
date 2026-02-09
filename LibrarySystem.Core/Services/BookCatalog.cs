@@ -1,4 +1,5 @@
 using LibrarySystem.Core.Models;
+using System.Linq;
 
 namespace LibrarySystem.Core.Services;
 
@@ -10,5 +11,9 @@ public class BookCatalog
   public void Add(Book book)
   {
     _books.Add(book);
+  }
+  public IEnumerable<Book> Search(string term)
+  {
+    return _books.Where(b => b.Matches(term));
   }
 }
