@@ -9,6 +9,9 @@ public class SearchTests
   [InlineData("Tolkien", true)]
   [InlineData("tolkien", true)]
   [InlineData("Rowling", false)]
+  [InlineData("123", true)] // ISBN
+  [InlineData("ringen", true)] // Title
+  [InlineData("xyz", false)]
 
   public void Book_Matches_ShouldFindByAuthor(string term, bool expected)
   {
