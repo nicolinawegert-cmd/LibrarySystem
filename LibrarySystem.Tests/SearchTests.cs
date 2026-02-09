@@ -1,4 +1,5 @@
 using LibrarySystem.Core.Models;
+using LibrarySystem.Core.Abstractions;
 using Xunit;
 
 namespace LibrarySystem.Tests;
