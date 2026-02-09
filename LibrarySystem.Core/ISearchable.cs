@@ -1,4 +1,4 @@
-namespace LibrarySystem.Core;
+namespace LibrarySystem.Core.Abstractions;
 public interface ISearchable
 {
     bool Matches(string SearchTerm);

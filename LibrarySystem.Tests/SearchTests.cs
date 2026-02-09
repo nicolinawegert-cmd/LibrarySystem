@@ -24,4 +24,14 @@ public class SearchTests
     // Assert
     Assert.Equal(expected, result);
   }
+
+  [Fact]
+  public void Book_ShouldImplement_ISearchable()
+  {
+    // Arrange
+    var book = new Book("123", "Sagan om ringen", "J.R.R. Tolkien", 1954);
+
+    // Act & Assert
+    Assert.IsAssignableFrom<ISearchable>(book);
+  }
 }
