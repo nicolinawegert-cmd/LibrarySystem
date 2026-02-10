@@ -56,4 +56,14 @@ public class LibraryCompositionTests
     Assert.NotNull(found);
     Assert.Equal("M001", found!.MemberId);
   }
+
+  [Fact]
+  public void Library_ShouldExposeLoanManager()
+  {
+    // Arrange & Act
+    var library = new Library();
+
+    //Assert
+    Assert.NotNull(library.Loans);
+  }
 }
