@@ -17,4 +17,17 @@ public class LibraryStatisticsTests
 
     Assert.Equal(2, total);
   }
+
+  [Fact]
+  public void GetBorrowedBooksCount_ShouldReturnZero_WhenNoLoansExist()
+  {
+    // Arrange
+    var library = new Library();
+
+    // Act
+    var borrowed = library.GetBorrowedBooksCount();
+
+    // Assert
+    Assert.Equal(0, borrowed);
+  }
 }
