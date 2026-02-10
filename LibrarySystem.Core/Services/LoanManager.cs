@@ -6,6 +6,7 @@ public class LoanManager
 {
   private readonly List<Loan> _loans = new();
   public IReadOnlyList<Loan> ActiveLoans => _loans.Where(l => !l.IsReturned).ToList();
+  public IReadOnlyList<Loan> Loans => _loans;
 
   public Loan Borrow(Book book, Member member, DateTime loanDate, DateTime dueDate)
   {
