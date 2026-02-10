@@ -11,7 +11,7 @@ public class Book : ISearchable
   public string Title { get; private set; }
   public string Author { get; private set; }
   public int PublishedYear { get; private set; }
-  public bool IsAvailable { get; set; } = true;
+  public bool IsAvailable { get; private set; } = true;
   public string GetInfo()
   {
     var status = IsAvailable ? "Tillgänglig" : "Utlånad";

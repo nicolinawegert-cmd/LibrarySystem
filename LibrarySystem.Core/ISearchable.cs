@@ -1,5 +1,5 @@
 namespace LibrarySystem.Core.Abstractions;
 public interface ISearchable
 {
-    bool Matches(string SearchTerm);
+    bool Matches(string searchTerm);
 }
