@@ -81,4 +81,18 @@ public class LibraryStatisticsTests
     // Assert
     Assert.Equal(anna, mostActive);
   }
+
+  [Fact]
+  public void GetMostActiveBorrower_ShouldReturnNull_WhenNoLoansExist()
+  {
+    // Arrange
+    var library = new Library();
+    library.Members.Add(new Member("M001", "test", "test@example.com"));
+
+    // Act
+    var mostActive = library.GetMostActiveBorrower();
+
+    // Assert
+    Assert.Null(mostActive);
+  }
 }
