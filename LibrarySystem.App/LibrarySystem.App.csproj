@@ -2,6 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibrarySystem.Core\LibrarySystem.Core.csproj" />
+    <None Update="Data/books.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+    <None Update="Data/members.json">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
   </ItemGroup>
 
   <PropertyGroup>

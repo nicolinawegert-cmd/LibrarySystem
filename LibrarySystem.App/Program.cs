@@ -1,2 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using LibrarySystem.Core.Services;
+
+var library = new Library();
+
+LibrarySeeder.SeedFromJson(library);
+
+var menu = new ConsoleMenu(library);
+menu.Run();

@@ -1,0 +1,5 @@
+[
+  { "memberId": "M001", "name": "Anna Andersson", "email": "anna@test.se" },
+  { "memberId": "M002", "name": "Bob Berg", "email": "bob@test.se" },
+  { "memberId": "M003", "name": "Charlie Chen", "email": "charlie@test.se" }
+]

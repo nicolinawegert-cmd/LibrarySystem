@@ -27,12 +27,12 @@ public class Book : ISearchable
     PublishedYear = publishedYear;
   }
 
-  internal void MarkAsBorrowed()
+  public void MarkAsBorrowed()
   {
     IsAvailable = false;
   }
 
-  internal void MarkAsReturned()
+  public void MarkAsReturned()
   {
     IsAvailable = true;
   }
