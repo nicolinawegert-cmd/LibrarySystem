@@ -19,7 +19,7 @@ public class LoanManagerTests
 
     // Assert
     Assert.False(book.IsAvailable);
-    Assert.Equal(1, manager.ActiveLoans.Count);
+    Assert.Single(manager.ActiveLoans);
     Assert.Equal(book, manager.ActiveLoans[0].Book);
     Assert.Equal(member, manager.ActiveLoans[0].Member);
   }
