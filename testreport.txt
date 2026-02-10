@@ -1,0 +1,11 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  LibrarySystem.Core -> /Users/nicolinawegert/Desktop/Projects/csharp_recess/LibrarySystem/LibrarySystem.Core/bin/Debug/net9.0/LibrarySystem.Core.dll
+  LibrarySystem.Tests -> /Users/nicolinawegert/Desktop/Projects/csharp_recess/LibrarySystem/LibrarySystem.Tests/bin/Debug/net9.0/LibrarySystem.Tests.dll
+Test run for /Users/nicolinawegert/Desktop/Projects/csharp_recess/LibrarySystem/LibrarySystem.Tests/bin/Debug/net9.0/LibrarySystem.Tests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.14.1 (arm64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    47, Skipped:     0, Total:    47, Duration: 14 ms - LibrarySystem.Tests.dll (net9.0)
