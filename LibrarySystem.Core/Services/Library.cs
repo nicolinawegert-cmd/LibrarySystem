@@ -14,5 +14,6 @@ namespace LibrarySystem.Core.Services
       return Catalog.Books.Count;
     }
     public int GetBorrowedBooksCount() => Loans.GetBorrowedBooksCount();
+    public Member? GetMostActiveBorrower() => null;
   }
 }

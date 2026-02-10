@@ -80,4 +80,5 @@ public class LibraryStatisticsTests
 
     // Assert
     Assert.Equal(anna, mostActive);
+  }
 }

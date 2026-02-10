@@ -23,4 +23,19 @@ public class LoanManagerTests
     Assert.Equal(book, manager.ActiveLoans[0].Book);
     Assert.Equal(member, manager.ActiveLoans[0].Member);
   }
+
+  [Fact]
+  public void Loans_ShouldExposeAllLoans_ForStatistics()
+  {
+    // Arrange
+    var manager = new LoanManager();
+    var book = new Book("1", "A", "X", 2000);
+    var member = new Member("M001", "Testmedlem", "test@example.com");
+
+    // Act
+    manager.Borrow(book, member, DateTime.UtcNow, DateTime.UtcNow.AddDays(14));
+
+    // Assert
+    Assert.Single(manager.Loans);
+  }
 }
