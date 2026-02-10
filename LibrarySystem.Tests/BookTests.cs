@@ -47,4 +47,14 @@ public class BookTests
         Assert.Contains("Utlånad", info);
     }
 
+    [Fact]
+    public void IsAvailable_ShouldBeTrue_ForNewBook()
+    {
+        // Arrange & Act
+        var book = new Book("123", "T", "A", 2020);
+
+        // Assert
+        Assert.True(book.IsAvailable);
+    }
+
 }
