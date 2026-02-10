@@ -35,4 +35,16 @@ public class SearchTests
     // Act & Assert
     Assert.IsAssignableFrom<ISearchable>(book);
   }
+
+  [Theory]
+  [InlineData("")]
+  [InlineData("  ")]
+  public void Book_Matches_ShouldReturnFalse_ForEmptyTerm(string term)
+  {
+    // Arrange & Act
+    var book = new Book("123", "Sagan om ringen", "J.R.R. Tolkien", 1954);
+
+    // Assert
+    Assert.False(book.Matches(term));
+  }
 }
