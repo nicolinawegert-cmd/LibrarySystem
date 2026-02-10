@@ -13,6 +13,6 @@ namespace LibrarySystem.Core.Services
     {
       return Catalog.Books.Count;
     }
-    public int GetBorrowedBooksCount() => 0;
+    public int GetBorrowedBooksCount() => Loans.GetBorrowedBooksCount();
   }
 }
