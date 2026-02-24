@@ -58,13 +58,10 @@ public class ConsoleMenu
     Console.Clear();
     Console.WriteLine("=== Sök Bok ===");
     Console.Write("Ange titel eller författare: ");
-    var query = Console.ReadLine();
+    var query = Console.ReadLine() ?? string.Empty;
 
-    var results = _library.Catalog.Books
-      .Where(b => b.Title.Contains(query ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
-                  b.Author.Contains(query ?? string.Empty, StringComparison.OrdinalIgnoreCase))
-      .ToList();
-
+    var results = _library.Catalog.Search(query).ToList();
+  
     Console.WriteLine("\nSökresultat:");
     if (!results.Any())
     {
