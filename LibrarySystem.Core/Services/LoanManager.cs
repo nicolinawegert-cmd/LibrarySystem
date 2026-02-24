@@ -10,6 +10,15 @@ public class LoanManager
 
   public Loan Borrow(Book book, Member member, DateTime loanDate, DateTime dueDate)
   {
+    if (book is null) throw new ArgumentNullException(nameof(book));
+    if (member is null) throw new ArgumentNullException(nameof(member));
+
+    if (dueDate <= loanDate) 
+      throw new ArgumentException("Due date must be after loan date.");
+
+    if (!book.IsAvailable) 
+      throw new InvalidOperationException("Book is not available for borrowing.");
+
     book.MarkAsBorrowed();
     member.AddBorrowedBook(book);
 
