@@ -75,19 +75,54 @@ public class BookRepositoryTests
     [Fact]
     public async Task GetAllAsync_ShouldReturnAllBooks()
     {
-        //Arrange 
+        // Arrange 
         using var context = TestDb.CreateContext(nameof(GetAllAsync_ShouldReturnAllBooks));
         var repository = TestDb.CreateBookRepository(context);
 
         await repository.AddAsync(new Book(isbn: "123", title: "Test Book 1", author: "Test Author", publishedYear: 2020));
         await repository.AddAsync(new Book(isbn: "456", title: "Test Book 2", author: "Test Author", publishedYear: 2021));
 
-        //Act
+        // Act
         var books = (await repository.GetAllAsync()).ToList();
 
-        //Assert
+        // Assert
         Assert.Equal(2, books.Count);
         Assert.Contains(books, b => b.ISBN == "123");
         Assert.Contains(books, b => b.ISBN == "456");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnBook_WhenExists()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(GetByIdAsync_ShouldReturnBook_WhenExists));
+        var repository = TestDb.CreateBookRepository(context);
+
+        var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publishedYear: 2020);
+        await repository.AddAsync(book);
+
+        var expectedId = book.Id;
+
+        // Act
+        var result = await repository.GetByIdAsync(expectedId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("123", result!.ISBN);
+        Assert.Equal("Test Book", result.Title);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnNull_WhenNotFound()
+    {
+        // Arrange 
+        using var context = TestDb.CreateContext(nameof(GetByIdAsync_ShouldReturnNull_WhenNotFound));
+        var repository = TestDb.CreateBookRepository(context);
+
+        // Act
+        var result = await repository.GetByIdAsync(12345);
+
+        // Assert
+        Assert.Null(result);
     }
 }
