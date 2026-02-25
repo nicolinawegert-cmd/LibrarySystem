@@ -12,9 +12,13 @@ public class BookRepository : IBookRepository
     _context = context;
   }
 
-  public Task AddAsync(Book book)
+  public async Task AddAsync(Book book)
   {
+    var exists = await _context.Books.AnyAsync(b => b.ISBN == book.ISBN);
+    if (exists)
+      throw new InvalidOperationException($"A book with ISBN '{book.ISBN}' already exists.");
+
     _context.Books.Add(book);
-    return _context.SaveChangesAsync();
+    await _context.SaveChangesAsync();
   }
 }
