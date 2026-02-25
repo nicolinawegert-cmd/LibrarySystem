@@ -71,4 +71,23 @@ public class BookRepositoryTests
         Assert.NotNull(result);
         Assert.Equal("Test Book", result!.Title);
     }
+
+    [Fact]
+    public async Task GetAllAsync_ShouldReturnAllBooks()
+    {
+        //Arrange 
+        using var context = TestDb.CreateContext(nameof(GetAllAsync_ShouldReturnAllBooks));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "123", title: "Test Book 1", author: "Test Author", publishedYear: 2020));
+        await repository.AddAsync(new Book(isbn: "456", title: "Test Book 2", author: "Test Author", publishedYear: 2021));
+
+        //Act
+        var books = (await repository.GetAllAsync()).ToList();
+
+        //Assert
+        Assert.Equal(2, books.Count);
+        Assert.Contains(books, b => b.ISBN == "123");
+        Assert.Contains(books, b => b.ISBN == "456");
+    }
 }
