@@ -26,4 +26,9 @@ public class BookRepository : IBookRepository
   {
     return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
   }
+
+  public async Task<IEnumerable<Book>> GetAllAsync()
+  {
+    return await _context.Books.ToListAsync();
+  }
 }

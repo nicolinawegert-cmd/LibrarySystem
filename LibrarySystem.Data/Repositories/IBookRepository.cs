@@ -6,4 +6,5 @@ public interface IBookRepository
 {
   Task AddAsync(Book book);
   Task<Book?> GetByISBNAsync(string isbn);
+  Task<IEnumerable<Book>> GetAllAsync();
 }
