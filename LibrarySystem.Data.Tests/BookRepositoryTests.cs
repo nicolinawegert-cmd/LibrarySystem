@@ -3,6 +3,7 @@ using LibrarySystem.Data;
 using LibrarySystem.Data.Repositories;
 using LibrarySystem.Core.Models;
 using Xunit;
+using LibrarySystem.Data.Tests;
 
 public class BookRepositoryTests
 {
@@ -14,8 +15,8 @@ public class BookRepositoryTests
             .UseInMemoryDatabase("AddAsync_ShouldSaveBookToDatabase")
             .Options;
 
-        using var context = new LibraryContext(options);
-        var repository = new BookRepository(context);
+        using var context = TestDb.CreateContext(nameof(AddAsync_ShouldSaveBookToDatabase));
+        var repository = TestDb.CreateBookRepository(context);
 
         var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publishedYear: 2020);
 
@@ -36,8 +37,8 @@ public class BookRepositoryTests
             .UseInMemoryDatabase("AddAsync_ShouldThrow_WhenISBNAlreadyExists")
             .Options;
 
-        using var context = new LibraryContext(options);
-        var repository = new BookRepository(context);
+        using var context = TestDb.CreateContext(nameof(AddAsync_ShouldThrow_WhenISBNAlreadyExists));
+        var repository = TestDb.CreateBookRepository(context);
 
         var book1 = new Book(isbn: "123", title: "Test Book 1", author: "Test Author", publishedYear: 2020);
         var book2 = new Book(isbn: "123", title: "Test Book 2", author: "Test Author", publishedYear: 2021);
@@ -57,8 +58,8 @@ public class BookRepositoryTests
             .UseInMemoryDatabase("GetByISBN_ShouldReturnBook_WhenExists")
             .Options;
 
-        using var context = new LibraryContext(options);
-        var repository = new BookRepository(context);
+        using var context = TestDb.CreateContext(nameof(GetByISBN_ShouldReturnBook_WhenExists));
+        var repository = TestDb.CreateBookRepository(context);
 
         var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publishedYear: 2020);
         await repository.AddAsync(book);
