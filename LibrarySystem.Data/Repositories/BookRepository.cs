@@ -36,4 +36,19 @@ public class BookRepository : IBookRepository
   {
     return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
   }
+
+  public async Task<IEnumerable<Book>> SearchAsync(string searchTerm)
+  {
+    if (string.IsNullOrWhiteSpace(searchTerm))
+      return await _context.Books.ToListAsync();
+
+    var term = searchTerm.Trim();
+
+    return await _context.Books
+      .Where(b =>
+        b.Title.ToLower().Contains(term) ||
+        b.Author.ToLower().Contains(term) ||
+        b.ISBN.ToLower().Contains(term))
+      .ToListAsync();
+  }
 }

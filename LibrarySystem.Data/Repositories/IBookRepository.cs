@@ -8,4 +8,5 @@ public interface IBookRepository
   Task<Book?> GetByISBNAsync(string isbn);
   Task<IEnumerable<Book>> GetAllAsync();
   Task<Book?> GetByIdAsync(int id);
+  Task<IEnumerable<Book>> SearchAsync(string searchTerm);
 }
