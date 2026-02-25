@@ -1,4 +1,5 @@
 using LibrarySystem.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystem.Data.Repositories;
 
@@ -11,5 +12,9 @@ public class BookRepository : IBookRepository
     _context = context;
   }
 
-  public Task AddAsync(Book book) => throw new NotImplementedException();
+  public Task AddAsync(Book book)
+  {
+    _context.Books.Add(book);
+    return _context.SaveChangesAsync();
+  }
 }
