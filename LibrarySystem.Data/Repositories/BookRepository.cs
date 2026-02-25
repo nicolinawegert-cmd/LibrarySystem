@@ -21,4 +21,9 @@ public class BookRepository : IBookRepository
     _context.Books.Add(book);
     await _context.SaveChangesAsync();
   }
+
+  public async Task<Book?> GetByISBNAsync(string isbn)
+  {
+    return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
+  }
 }
