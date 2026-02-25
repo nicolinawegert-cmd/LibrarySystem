@@ -125,4 +125,22 @@ public class BookRepositoryTests
         // Assert
         Assert.Null(result);
     }
+
+    [Fact]
+    public async Task SearchAsync_ShouldFindBooksByTitle()
+    {
+        // Arrange 
+        using var context = TestDb.CreateContext(nameof(SearchAsync_ShouldFindBooksByTitle));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "111", title: "Sagan om ringen", author: "J.R.R. Tolkien", publishedYear: 1954));
+        await repository.AddAsync(new Book(isbn: "222", title: "1984", author: "George Orwell", publishedYear: 1949));
+
+        // Act
+        var results = (await repository.SearchAsync("ringen")).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("111", results[0].ISBN);
+    }
 }
