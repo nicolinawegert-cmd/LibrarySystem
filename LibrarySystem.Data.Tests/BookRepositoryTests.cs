@@ -143,4 +143,23 @@ public class BookRepositoryTests
         Assert.Single(results);
         Assert.Equal("111", results[0].ISBN);
     }
+
+    [Fact]
+    public async Task SearchAsync_ShouldFindBooksByAuthor()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(SearchAsync_ShouldFindBooksByAuthor));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "111", title: "Sagan om ringen", author: "J.R.R. Tolkien", publishedYear: 1954));
+        await repository.AddAsync(new Book(isbn: "222", title: "Hobbiten", author: "J.R.R. Tolkien", publishedYear: 1937));
+        await repository.AddAsync(new Book(isbn: "333", title: "Animal Farm", author: "George Orwell", publishedYear: 1945));
+
+        // Act
+        var results = (await repository.SearchAsync("tolkien")).ToList();
+
+        // Assert
+        Assert.Equal(2, results.Count);
+        Assert.All(results, b => Assert.Equal("J.R.R. Tolkien", b.Author));
+    }
 }
