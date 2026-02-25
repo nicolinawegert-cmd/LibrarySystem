@@ -48,4 +48,26 @@ public class BookRepositoryTests
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => repository.AddAsync(book2));
         Assert.Contains("ISBN", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public async Task GetByISBN_ShouldReturnBook_WhenExists()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<LibraryContext>()
+            .UseInMemoryDatabase("GetByISBN_ShouldReturnBook_WhenExists")
+            .Options;
+
+        using var context = new LibraryContext(options);
+        var repository = new BookRepository(context);
+
+        var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publishedYear: 2020);
+        await repository.AddAsync(book);
+
+        // Act
+        var result = await repository.GetByISBNAsync("123");
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Test Book", result!.Title);
+    }
 }
