@@ -17,7 +17,7 @@ public class BookRepositoryTests
         using var context = new LibraryContext(options);
         var repository = new BookRepository(context);
 
-        var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publicationYear: 2020);
+        var book = new Book(isbn: "123", title: "Test Book", author: "Test Author", publishedYear: 2020);
 
         // Act
         await repository.AddAsync(book);
