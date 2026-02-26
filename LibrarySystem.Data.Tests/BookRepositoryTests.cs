@@ -181,6 +181,35 @@ public class BookRepositoryTests
         // Assert
         var saved = await context.Books.FirstAsync(b => b.Id == book.Id);
         Assert.Equal("New Title", saved.Title);
-        
+
     }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldRemoveBook_WhenExists()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(DeleteAsync_ShouldRemoveBook_WhenExists));
+        var repository = TestDb.CreateBookRepository(context);
+
+        var book = new Book("555", "To Be Deleted", "Test Author", 2020);
+        await repository.AddAsync(book);
+
+        // Act
+        await repository.DeleteAsync(book.Id);
+
+        // Assert
+        var exists = await context.Books.AnyAsync(b => b.Id == book.Id);
+        Assert.False(exists);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldThrow_WhenBookNotFound()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(DeleteAsync_ShouldThrow_WhenBookNotFound));
+        var repository = TestDb.CreateBookRepository(context);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => repository.DeleteAsync(9999));
+    }   
 }
