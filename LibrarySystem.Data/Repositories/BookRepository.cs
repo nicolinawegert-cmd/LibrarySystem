@@ -51,4 +51,14 @@ public class BookRepository : IBookRepository
         b.ISBN.ToLower().Contains(term))
       .ToListAsync();
   }
+
+  public async Task UpdateAsync(Book book)
+  {
+    var exists = await _context.Books.AnyAsync(b => b.Id == book.Id);
+    if (!exists)
+      throw new InvalidOperationException($"Book with ID '{book.Id}' was not found.");
+
+    _context.Books.Update(book);
+    await _context.SaveChangesAsync();
+  }
 }
