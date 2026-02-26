@@ -24,6 +24,7 @@ public class BookRepository : IBookRepository
 
   public async Task<Book?> GetByISBNAsync(string isbn)
   {
+    isbn = isbn.Trim();
     return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
   }
 

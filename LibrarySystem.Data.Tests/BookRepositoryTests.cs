@@ -61,6 +61,23 @@ public class BookRepositoryTests
     }
 
     [Fact]
+    public async Task GetByISBNAsync_ShouldTrimIsbnInput()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(GetByISBNAsync_ShouldTrimIsbnInput));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "ABC-123", title: "Test Book", author: "Test Author", publishedYear: 2020));
+
+        // Act
+        var result = await repository.GetByISBNAsync("  ABC-123  ");
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Test Book", result!.Title);
+    }
+
+    [Fact]
     public async Task GetAllAsync_ShouldReturnAllBooks()
     {
         // Arrange 
