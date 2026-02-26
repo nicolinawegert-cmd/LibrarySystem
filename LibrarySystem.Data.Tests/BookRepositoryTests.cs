@@ -11,10 +11,6 @@ public class BookRepositoryTests
     public async Task AddAsync_ShouldSaveBookToDatabase()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<LibraryContext>()
-            .UseInMemoryDatabase("AddAsync_ShouldSaveBookToDatabase")
-            .Options;
-
         using var context = TestDb.CreateContext(nameof(AddAsync_ShouldSaveBookToDatabase));
         var repository = TestDb.CreateBookRepository(context);
 
@@ -33,10 +29,6 @@ public class BookRepositoryTests
     public async Task AddAsync_ShouldThrow_WhenISBNAlreadyExists()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<LibraryContext>()
-            .UseInMemoryDatabase("AddAsync_ShouldThrow_WhenISBNAlreadyExists")
-            .Options;
-
         using var context = TestDb.CreateContext(nameof(AddAsync_ShouldThrow_WhenISBNAlreadyExists));
         var repository = TestDb.CreateBookRepository(context);
 
@@ -54,10 +46,6 @@ public class BookRepositoryTests
     public async Task GetByISBN_ShouldReturnBook_WhenExists()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<LibraryContext>()
-            .UseInMemoryDatabase("GetByISBN_ShouldReturnBook_WhenExists")
-            .Options;
-
         using var context = TestDb.CreateContext(nameof(GetByISBN_ShouldReturnBook_WhenExists));
         var repository = TestDb.CreateBookRepository(context);
 
