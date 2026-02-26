@@ -10,4 +10,5 @@ public interface IBookRepository
   Task<Book?> GetByIdAsync(int id);
   Task<IEnumerable<Book>> SearchAsync(string searchTerm);
   Task UpdateAsync(Book book);
+  Task DeleteAsync(int id);
 }

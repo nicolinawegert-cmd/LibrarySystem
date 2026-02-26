@@ -61,4 +61,14 @@ public class BookRepository : IBookRepository
     _context.Books.Update(book);
     await _context.SaveChangesAsync();
   }
+
+  public async Task DeleteAsync(int id)
+  {
+    var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+    if (book == null)
+      throw new InvalidOperationException($"Book with ID '{id}' was not found.");
+
+    _context.Books.Remove(book);
+    await _context.SaveChangesAsync();
+  }
 }
