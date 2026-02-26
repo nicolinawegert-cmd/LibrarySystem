@@ -162,4 +162,25 @@ public class BookRepositoryTests
         Assert.Equal(2, results.Count);
         Assert.All(results, b => Assert.Equal("J.R.R. Tolkien", b.Author));
     }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldPersistChanges()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(UpdateAsync_ShouldPersistChanges));
+        var repository = TestDb.CreateBookRepository(context);
+
+        var book = new Book(isbn: "123", title: "Original Title", author: "Test Author", publishedYear: 2020);
+        await repository.AddAsync(book);
+
+        book.UpdateTitle("New Title");
+
+        // Act
+        await repository.UpdateAsync(book);
+
+        // Assert
+        var saved = await context.Books.FirstAsync(b => b.Id == book.Id);
+        Assert.Equal("New Title", saved.Title);
+        
+    }
 }
