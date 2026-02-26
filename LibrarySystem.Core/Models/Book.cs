@@ -35,7 +35,7 @@ public class Book : ISearchable
  
   public void MarkAsBorrowed() => IsAvailable = false;
   public void MarkAsReturned() => IsAvailable = true;
-  
+
   public bool Matches(string searchTerm)
   {
     if (string.IsNullOrWhiteSpace(searchTerm))
@@ -48,4 +48,5 @@ public class Book : ISearchable
             ISBN.Contains(term, StringComparison.OrdinalIgnoreCase);
   }
   
+  public void UpdateTitle(string title) => Title = title;
 }
