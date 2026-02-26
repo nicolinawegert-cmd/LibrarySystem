@@ -43,6 +43,19 @@ public class BookRepositoryTests
     }
 
     [Fact]
+    public async Task AddAsync_ShouldThrow_WhenISBNIsEmpty()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(AddAsync_ShouldThrow_WhenISBNIsEmpty));
+        var repository = TestDb.CreateBookRepository(context);
+
+        var book = new Book("", "Test Book", "Test Author", 2020);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => repository.AddAsync(book));
+    }
+
+    [Fact]
     public async Task GetByISBN_ShouldReturnBook_WhenExists()
     {
         // Arrange
