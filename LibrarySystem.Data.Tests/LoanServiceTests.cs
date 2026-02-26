@@ -26,14 +26,17 @@ public class LoanServiceTests
     await service.BorrowAsync(book.Id, member.Id);
 
     // Assert: book is now unavailable
-    var savedBook = await context.Books.FindAsync(b => b.Id == book.Id);
+    var savedBook = await context.Books.FirstAsync(b => b.Id == book.Id);
     Assert.False(savedBook.IsAvailable);
 
     // Assert: exacly one loan created linked to both
     var loans = await context.Loans.ToListAsync();
     Assert.Single(loans);
-    Assert.Equal(book.Id, loans[0].BookId);
-    Assert.Equal(member.Id, loans[0].MemberId);
-    Assert.NotNull(loans[0].ReturnDate);
+
+    var loan = loans[0];
+    Assert.Equal(book.Id, loan.BookId);
+    Assert.Equal(member.Id, loan.MemberId);
+    Assert.Null(loan.ReturnDate);
+    Assert.False(loan.IsReturned);
   }
 }
