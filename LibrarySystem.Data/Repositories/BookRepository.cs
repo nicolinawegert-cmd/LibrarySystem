@@ -33,7 +33,7 @@ public class BookRepository : IBookRepository
 
   public async Task<IEnumerable<Book>> GetAllAsync()
   {
-    return await _context.Books.ToListAsync();
+    return await _context.Books.OrderBy(b => b.Title).ToListAsync();
   }
 
   public async Task<Book?> GetByIdAsync(int id)
