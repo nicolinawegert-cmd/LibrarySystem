@@ -39,4 +39,26 @@ public class LoanServiceTests
     Assert.Null(loan.ReturnDate);
     Assert.False(loan.IsReturned);
   }
+
+  [Fact]
+  public async Task BorrowAsync_ShouldThrow_WhenBookNotAvailable()
+  {
+    // Arrange
+    using var context = TestDb.CreateContext(nameof(BorrowAsync_ShouldThrow_WhenBookNotAvailable));
+
+    var book = new Book("111", "Book", "Author", 2020);
+    var member1 = new Member("M1", "John Doe", "john.doe@example.com");
+
+    context.Books.Add(book);
+    context.Members.Add(member1);
+    await context.SaveChangesAsync();
+
+    book.MarkAsBorrowed();
+    await context.SaveChangesAsync();
+
+    var service = new LoanService(context);
+    
+    // Act & Assert
+    await Assert.ThrowsAsync<InvalidOperationException>(() => service.BorrowAsync(book.Id, member1.Id));
+  }
 }
