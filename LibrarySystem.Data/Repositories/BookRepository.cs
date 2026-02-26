@@ -17,6 +17,9 @@ public class BookRepository : IBookRepository
     var exists = await _context.Books.AnyAsync(b => b.ISBN == book.ISBN);
     if (exists)
       throw new InvalidOperationException($"A book with ISBN '{book.ISBN}' already exists.");
+      
+    if (string.IsNullOrWhiteSpace(book.ISBN))
+      throw new InvalidOperationException("ISBN is required.");
 
     _context.Books.Add(book);
     await _context.SaveChangesAsync();
