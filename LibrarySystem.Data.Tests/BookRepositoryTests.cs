@@ -110,6 +110,24 @@ public class BookRepositoryTests
     }
 
     [Fact]
+    public async Task GetAllAsync_ShouldReturnBooksOrderedByTitle()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(GetAllAsync_ShouldReturnBooksOrderedByTitle));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book("2", "B Title", "Author", 2020));
+        await repository.AddAsync(new Book("1", "A Title", "Author", 2020));
+
+        // Act
+        var books = (await repository.GetAllAsync()).ToList();
+
+        // Assert
+        Assert.Equal("A Title", books[0].Title);
+        Assert.Equal("B Title", books[1].Title);
+    }
+
+    [Fact]
     public async Task GetByIdAsync_ShouldReturnBook_WhenExists()
     {
         // Arrange
