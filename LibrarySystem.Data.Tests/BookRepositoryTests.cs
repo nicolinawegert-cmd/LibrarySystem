@@ -152,6 +152,23 @@ public class BookRepositoryTests
     }
 
     [Fact]
+    public async Task SearchAsync_ShouldReturnAllBooks_WhenSearchTermIsEmpty()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(SearchAsync_ShouldReturnAllBooks_WhenSearchTermIsEmpty));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "111", title: "Sagan om ringen", author: "J.R.R. Tolkien", publishedYear: 1954));
+        await repository.AddAsync(new Book(isbn: "222", title: "1984", author: "George Orwell", publishedYear: 1949));
+
+        // Act
+        var results = (await repository.SearchAsync("")).ToList();
+
+        // Assert
+        Assert.Equal(2, results.Count);
+    }
+
+    [Fact]
     public async Task UpdateAsync_ShouldPersistChanges()
     {
         // Arrange
@@ -199,5 +216,5 @@ public class BookRepositoryTests
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => repository.DeleteAsync(9999));
-    }   
+    }
 }
