@@ -1,9 +1,11 @@
 @page "/books"
 @inject IBookRepository BookRepository
 
-<PageTitle>Böcker</PageTitle> 
+<PageTitle>Böcker</PageTitle>
 
 <h1>Böcker</h1>
+
+<p>Sortering: @currentSortColumn (@(sortAscending ? "Stigande" : "Fallande"))</p>
 
 <div class="mb-3">
   <label for="searchTerm" class="form-label">Sök bok</label>
@@ -11,7 +13,7 @@
 </div>
 
 <button class="btn btn-primary mb-2" @onclick="HandleSearch">Sök</button>
-<button class="btn btn-secondary" @onclick="LoadAllBooks">Visa alla</button>
+<button class="btn btn-secondary mb-2 ms-2" @onclick="LoadAllBooks">Visa alla</button>
 
 @if (books is null)
 {
@@ -19,18 +21,38 @@
 }
 else if (!books.Any())
 {
-  <p>Det finns inga böcker i databasen ännu</p>
+  <p>Inga böcker matchar sökningen.</p>
 }
 else
 {
   <table class="table">
     <thead>
       <tr>
-        <th>ISBN</th>
-        <th>Titel</th>
-        <th>Författare</th>
-        <th>År</th>
-        <th>Status</th>
+        <th>
+          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.ISBN))">
+            ISBN
+          </button>
+        </th>
+        <th>
+          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Title))">
+            Titel
+          </button>
+        </th>
+        <th>
+          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Author))">
+            Författare
+          </button>
+        </th>
+        <th>
+          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.PublishedYear))">
+            År
+          </button>
+        </th>
+        <th>
+          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.IsAvailable))">
+            Status
+          </button>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -49,8 +71,10 @@ else
 }
 
 @code {
-  private IEnumerable<Book>? books;
+  private List<Book>? books;
   private string searchTerm = string.Empty;
+  private string currentSortColumn = nameof(Book.Title);
+  private bool sortAscending = true;
 
   protected override async Task OnInitializedAsync()
   {
@@ -59,11 +83,52 @@ else
 
   private async Task LoadAllBooks()
   {
-    books = await BookRepository.GetAllAsync();
+    books = (await BookRepository.GetAllAsync()).ToList();
   }
-  
+
   private async Task HandleSearch()
   {
-    books = await BookRepository.SearchAsync(searchTerm);
+    books = (await BookRepository.SearchAsync(searchTerm)).ToList();
+  }
+
+  private void SortBooks(string column)
+  {
+    if (books is null)
+      return;
+
+    if (currentSortColumn == column)
+    {
+      sortAscending = !sortAscending;
+    }
+    else
+    {
+      currentSortColumn = column;
+      sortAscending = true;
+    }
+
+    books = column switch
+    {
+      nameof(Book.ISBN) => sortAscending
+          ? books.OrderBy(b => b.ISBN).ToList()
+          : books.OrderByDescending(b => b.ISBN).ToList(),
+
+      nameof(Book.Title) => sortAscending
+          ? books.OrderBy(b => b.Title).ToList()
+          : books.OrderByDescending(b => b.Title).ToList(),
+
+      nameof(Book.Author) => sortAscending
+          ? books.OrderBy(b => b.Author).ToList()
+          : books.OrderByDescending(b => b.Author).ToList(),
+
+      nameof(Book.PublishedYear) => sortAscending
+          ? books.OrderBy(b => b.PublishedYear).ToList()
+          : books.OrderByDescending(b => b.PublishedYear).ToList(),
+
+      nameof(Book.IsAvailable) => sortAscending
+          ? books.OrderBy(b => b.IsAvailable).ToList()
+          : books.OrderByDescending(b => b.IsAvailable).ToList(),
+
+      _ => books
+    };
   }
 }
