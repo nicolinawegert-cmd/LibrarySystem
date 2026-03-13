@@ -1,7 +1,141 @@
 @page "/loans"
+@inject LibraryContext Context
+@inject LoanService LoanService
 
 <PageTitle>Utlåning</PageTitle>
 
 <h1>Utlåning</h1>
 
-<p>Här kan du hantera bibliotekets utlåning.</p>
+<div class="mb-3">
+  <label for="book" class="form-label">Bok</label>
+  <InputSelect id="book" class="form-select" @bind-Value="selectedBookId">
+    <option value="0">Välj en bok</option>
+    @foreach (var book in availableBooks)
+    {
+      <option value="@book.Id">@book.Title</option>
+    }
+  </InputSelect>
+</div>
+
+<div class="mb-3">
+  <label for="member" class="form-label">Medlem</label>
+  <InputSelect id="member" class="form-select" @bind-Value="selectedMemberId">
+    <option value="0">Välj en medlem</option>
+    @foreach (var member in members)
+    {
+      <option value="@member.Id">@member.Name</option>
+    }
+  </InputSelect>
+</div>
+
+<button class="btn btn-primary" @onclick="HandleCreateLoan">Skapa lån</button>
+
+@if (!string.IsNullOrWhiteSpace(message))
+{
+  <p class="text-success">@message</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+  <p class="text-danger">@errorMessage</p>
+}
+
+<h2>Aktiva lån</h2>
+
+@if (!activeloans.Any())
+{
+  <p>Det finns inga aktiva lån.</p>
+}
+else
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Bok</th>
+        <th>Medlem</th>
+        <th>Lånedatum</th>
+        <th>Förfallodatum</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var loan in activeloans)
+      {
+        var isOverdue = loan.DueDate.Date < DateTime.UtcNow.Date;
+
+        <tr>
+          <td>@loan.Book?.Title</td>
+          <td>@loan.Member?.Name</td>
+          <td>@loan.LoanDate.ToShortDateString()</td>
+          <td>@loan.DueDate.ToShortDateString()</td>
+          <td>@(isOverdue ? "Försenad" : "Aktiv")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  private List<Book> availableBooks = new();
+  private List<Member> members = new();
+  private List<Loan> activeloans = new();
+
+  private int selectedBookId;
+  private int selectedMemberId;
+
+  private string? message;
+  private string? errorMessage;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await LoadPageData();
+  }
+
+  private async Task LoadPageData()
+  {
+    availableBooks = await Context.Books
+      .Where(b => b.IsAvailable)
+      .OrderBy(b => b.Title)
+      .ToListAsync();
+
+    members = await Context.Members
+      .OrderBy(m => m.Name)
+      .ToListAsync();
+
+    activeloans = await Context.Loans
+      .Include(l => l.Book)
+      .Include(l => l.Member)
+      .Where(l => !l.IsReturned)
+      .OrderBy(l => l.DueDate)
+      .ToListAsync();
+  }
+
+  private async Task HandleCreateLoan()
+  {
+    message = null;
+    errorMessage = null;
+
+    if (selectedBookId == 0  || selectedMemberId == 0)
+    {
+      errorMessage = "Vänligen välj både en bok och en medlem.";
+      return;
+    }
+
+    try 
+    {
+      await LoanService.BorrowAsync(selectedBookId, selectedMemberId);
+
+      message = "Lånet har skapats!";
+      selectedBookId = 0;
+      selectedMemberId = 0;
+
+      await LoadPageData();
+    }
+    catch (InvalidOperationException ex)
+    {
+      errorMessage = ex.Message;
+    }
+  }
+}
+
+
