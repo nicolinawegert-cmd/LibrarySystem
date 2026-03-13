@@ -17,7 +17,7 @@
 
 <h2>Lägg till ny bok</h2>
 
-<EditForm Model="@newBook" OnValidSubmit="HandleAddBook">
+<EditForm Model="@newBook" OnValidSubmit="HandleAddBook" FormName="AddBookForm">
   <DataAnnotationsValidator />
   <ValidationSummary />
 

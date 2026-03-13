@@ -7,7 +7,7 @@
 
 <h2>Registrera ny medlem</h2>
 
-<EditForm Model="@newMember" OnValidSubmit="HandleAddMember">
+<EditForm Model="@newMember" OnValidSubmit="HandleAddMember" FormName="AddMemberForm">
   <DataAnnotationsValidator />
   <ValidationSummary />
 
