@@ -1,193 +1,201 @@
-# Library System – Objektorienterad programmering i C#
+# LibrarySystem
 
-## Beskrivning
+Bibliotekssystem byggt i C# och .NET med fokus pa objektorientering, Entity Framework Core och Blazor.
 
-Detta projekt är ett **konsolbaserat bibliotekssystem** utvecklat i C# som en del av kursen **Programmering Fördjupning**.
+Projektet ar uppdelat i flera delar:
 
-Syftet är att demonstrera förståelse för:
+- `LibrarySystem.Core` innehaller modeller och domanlogik
+- `LibrarySystem.Data` innehaller `LibraryContext`, migrationer och dataatkomst
+- `LibrarySystem.Web` ar Blazor-webbgranssnittet
+- `LibrarySystem.App` ar konsolprojektet fran tidigare del
+- `LibrarySystem.Tests` innehaller tester for Del 1
+- `LibrarySystem.Data.Tests` innehaller tester for Del 2
 
-- Klasser och objekt  
-- Inkapsling och properties  
-- Komposition  
-- Polymorfism och interfaces  
-- Grundläggande algoritmer  
-- Enhetstestning med xUnit  
+## Funktioner
 
-Systemet hanterar:
+Webbapplikationen innehaller bland annat:
 
-- Böcker  
-- Medlemmar  
-- Utlåning  
-- Sökning, sortering och statistik  
-
----
+- startsida med snabbstatistik
+- boklista med sokning, sortering och kortvy
+- bokdetaljer med lanehistorik
+- skapa och ta bort bok
+- medlemslista och registrering av ny medlem
+- skapa lan och returnera lan
+- datalagring med SQLite via Entity Framework Core
 
 ## Projektstruktur
 
-Lösningen består av tre projekt:
-
-### **LibrarySystem.Core**
-Innehåller all **domänlogik**.
-
-**Models**
-- Book  
-- Member  
-- Loan  
-
-**Services**
-- Library  
-- BookCatalog  
-- MemberRegistry  
-- LoanManager  
-
-**Abstractions**
-- ISearchable  
-
----
-
-### **LibrarySystem.Tests**
-xUnit-testprojekt som verifierar:
-
-- Domänlogik  
-- Sökfunktionalitet  
-- Statistik  
-- Lånelogik  
-
-✔ Innehåller **fler än 10 tester** (uppfyller minimikravet)
-
----
-
-### **LibrarySystem.App**
-Konsolapplikation som fungerar som **startpunkt** för systemet.
-
----
-
-## Uppfyllda krav enligt uppgift
-
-### Del 1 – Klasser och inkapsling
-
-**Book**
-- ISBN kan endast sättas vid skapande  
-- Tillgänglighet hanteras via metoder  
-- `GetInfo()` returnerar formaterad bokinformation  
-
-**Member**
-- Inkapslad lista över lånade böcker  
-- `GetInfo()` visar medlemsinformation  
-
-**Loan**
-- Beräknade properties:
-  - `IsReturned`
-  - `IsOverdue`
-
----
-
-### Del 2 – Komposition
-
-Vald lösning: **Alternativ B – Komposition**
-
-`Library` innehåller:
-
-- BookCatalog  
-- MemberRegistry  
-- LoanManager  
-
----
-
-### Del 3 – Interface och polymorfism
-
-```csharp
-public interface ISearchable
-{
-    bool Matches(string searchTerm);
-}
+```text
+LibrarySystem/
+├── LibrarySystem.Core/
+├── LibrarySystem.Data/
+├── LibrarySystem.Web/
+├── LibrarySystem.App/
+├── LibrarySystem.Tests/
+└── LibrarySystem.Data.Tests/
 ```
 
-Implementeras av:
+## Databasmodell
 
-- Book
+Databasen hanteras av Entity Framework Core med SQLite.
 
-Ger en enhetlig sökfunktion i systemet.
+### Book
 
----
+- `Id`
+- `ISBN`
+- `Title`
+- `Author`
+- `PublishedYear`
+- `IsAvailable`
 
-## Del 4 – Algoritmer
+En bok kan ha flera lan via relationen till `Loan`.
 
-### Sökning
-- Sök efter titel, författare eller ISBN.
+### Member
 
-### Sortering
-- Alfabetisk sortering av titel.
-- Sortering efter utgivningsår.
+- `Id`
+- `MemberId`
+- `Name`
+- `Email`
+- `MemberSince`
 
-### Statistik
-- Totalt antal böcker.
-- Antal utlånade böcker.
-- Mest aktiva låntagaren.
+En medlem kan ha flera lan via relationen till `Loan`.
 
----
+### Loan
 
-## Del 5 – Enhetstester (xUnit)
+- `Id`
+- `BookId`
+- `MemberId`
+- `LoanDate`
+- `DueDate`
+- `ReturnDate`
 
-Projektet innehåller tester för:
+Varje lan kopplas till exakt en bok och exakt en medlem.
 
-- Book
-- Loan
-- ISearchable
-- Statistik och algoritmer
+### Relationer
 
-✔ Minst **10 tester**  
-✔ Följer **AAA-mönstret (Arrange, Act, Assert)**  
-✔ Täcker både **happy path** och **edge cases**
+- `Book 1 -> many Loan`
+- `Member 1 -> many Loan`
+- `Loan many -> 1 Book`
+- `Loan many -> 1 Member`
 
----
+## Databasschema
 
-## Så kör du projektet
+Tabellstrukturen i databasen bestar av:
 
-### 1. Klona repository
+- `Books`
+- `Members`
+- `Loans`
+- `__EFMigrationsHistory`
 
-```bash
-git clone <repo-länk>
-cd LibrarySystem
+Forhallandet mellan tabellerna:
+
+```text
+Books (Id) ----< Loans (BookId)
+Members (Id) --< Loans (MemberId)
 ```
 
-### 2. Bygg lösningen
+## Sa kor du projektet
+
+Utga fran losningens rotmapp.
+
+### 1. Bygg losningen
 
 ```bash
 dotnet build
 ```
 
-### 3. Kör tester
+### 2. Uppdatera databasen med migrationer
+
+```bash
+dotnet ef database update --project LibrarySystem.Data --startup-project LibrarySystem.Web
+```
+
+### 3. Starta webbappen
+
+```bash
+dotnet run --project LibrarySystem.Web
+```
+
+### 4. Oppna i webblasaren
+
+Standardadress ar normalt:
+
+```text
+https://localhost:xxxx
+```
+
+eller
+
+```text
+http://localhost:xxxx
+```
+
+### 5. Kor tester
+
+Alla tester:
 
 ```bash
 dotnet test
 ```
 
-### 4. Starta konsolapplikationen
+Endast Del 2-tester:
 
 ```bash
-dotnet run --project LibrarySystem.App
+dotnet test LibrarySystem.Data.Tests
 ```
 
----
+## Del 2-tester
 
-## Kodkvalitet
+Del 2-testerna finns i projektet `LibrarySystem.Data.Tests`.
 
-Projektet följer:
+De testar bland annat:
 
-- Objektorienterade principer  
-- Inkapsling och separation av ansvar  
-- Clean Code-namngivning  
-- Testdriven utveckling (TDD)  
-- Read-only exponering av interna samlingar  
+- `BookRepository`
+- CRUD-operationer mot datalagret
+- sokning och hamtning via repository
+- integrationsfloden i `LoanService`
+- utlanning och returnering av bocker
 
----
+Projektet innehaller minst 10 nya tester for Del 2 och passerar lokalt.
 
-## Vidareutveckling (Del 2)
+## Blazor-sidor
 
-Planerad fortsättning:
+Foljande sidor finns i webbprojektet:
 
-- Entity Framework Core  
-- Databaslagring  
-- Blazor-gränssnitt  
+- `/` startsida med statistik
+- `/books` boklista
+- `/books/{id}` bokdetaljer
+- `/members` medlemslista
+- `/loans` hantering av lan
 
+## Screenshots
+
+Lagg in screenshots har innan inlamning:
+
+- Startsida
+- Boklista
+- Bokdetaljer
+- Medlemmar
+- Utlanning
+
+Exempel:
+
+```text
+/screenshots/home.png
+/screenshots/books.png
+/screenshots/book-details.png
+/screenshots/members.png
+/screenshots/loans.png
+```
+
+## Teknisk sammanfattning
+
+- .NET 9
+- Blazor Server via .NET Blazor Web App
+- Entity Framework Core
+- SQLite
+- xUnit for enhetstester
+
+## Kommentar
+
+Konsolprojektet fran tidigare del finns kvar i losningen, men huvudfokus i Del 2 ar datalagret och webbgranssnittet.

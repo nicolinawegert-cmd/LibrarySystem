@@ -32,13 +32,18 @@
 
 @if (!string.IsNullOrWhiteSpace(message))
 {
-  <p class="text-success">@message</p>
+  <div class="alert alert-success" role="alert">
+    @message
+  </div>
 }
 
 @if (!string.IsNullOrWhiteSpace(errorMessage))
 {
-  <p class="text-danger">@errorMessage</p>
+  <div class="alert alert-danger" role="alert">
+    @errorMessage
+  </div>
 }
+
 
 <h2>Aktiva lån</h2>
 
@@ -141,6 +146,10 @@ else
     {
       errorMessage = ex.Message;
     }
+    catch (Exception)
+    {
+      errorMessage = "Ett oväntat fel inträffade när lånet skulle skapas.";
+    }
   }
   private async Task HandleReturnLoan(int loanId)
   {
@@ -157,6 +166,10 @@ else
     catch (InvalidOperationException ex)
     {
       errorMessage = ex.Message;
+    }
+    catch (Exception)
+    {
+      errorMessage = "Ett oväntat fel uppstod när lånet skulle returneras.";
     }
   }
 }
