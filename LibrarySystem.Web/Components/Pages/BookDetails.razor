@@ -1,9 +1,8 @@
 @page "/books/{id:int}"
 @using LibrarySystem.Data.Services
 @inject IBookRepository BookRepository
-@inject LibraryContext Context
+@inject LibraryContext Db
 @inject LoanService LoanService
-@inject NavigationManager NavigationManager
 
 
 <PageTitle>Bokdetaljer</PageTitle>
@@ -28,7 +27,7 @@ else
 
   <h2>Lånehistorik</h2>
 
-  @if (book?.Loans is null || !book.Loans.Any())
+  @if (!book.Loans.Any())
   {
     <p>Det finns ingen lånehistorik för den här boken.</p>
   }
@@ -44,7 +43,7 @@ else
         </tr>
       </thead>
       <tbody> 
-@foreach (var loan in book.Loans.OrderByDescending(l => l.LoanDate))
+        @foreach (var loan in book.Loans.OrderByDescending(l => l.LoanDate))
         {
           <tr>
             <td>@loan.Member?.Name</td>
@@ -57,7 +56,7 @@ else
     </table>
   }
 
-  @if (book is not null && book.IsAvailable)
+@if (book.IsAvailable)
   {
     <h2>Låna bok</h2>
 
@@ -65,7 +64,7 @@ else
       <label for="member" class="form-label">Välj medlem</label>
       <select id="member" class="form-select" @bind="selectedMemberId">
         <option value="0">Välj en medlem</option>
-@foreach (var member in members)
+        @foreach (var member in members)
         {
           <option value="@member.Id">@member.Name</option>
         }
@@ -73,7 +72,7 @@ else
     </div>
     <button class="btn btn-primary" @onclick="HandleBorrow">Låna Bok</button>
   }
-  else if (book is not null)
+  else
   {
     <p><strong>Boken är redan utlånad</strong></p>
   }
@@ -103,7 +102,7 @@ else
   protected override async Task OnParametersSetAsync()
   {
     book = await BookRepository.GetByIdAsync(Id);
-    members = await Context.Members.OrderBy(m => m.Name).ToListAsync();
+    members = await Db.Members.OrderBy(m => m.Name).ToListAsync();
   }
   private async Task HandleBorrow()
   {
@@ -120,7 +119,7 @@ else
     {
       await LoanService.BorrowAsync(Id, selectedMemberId);
       message = "Boken har lånats ut!";
-      book = await BookRepository.GetByIdAsync(Id); // Uppdatera bokinformationen
+      book = await BookRepository.GetByIdAsync(Id); 
     }
     catch (InvalidOperationException ex)
     {
