@@ -1,0 +1,33 @@
+@page "/books/{id:int}"
+@inject IBookRepository BookRepository
+
+<PageTitle>Bokdetaljer</PageTitle>
+
+<h1>Bokdetaljer</h1>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Book? book;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        book = await BookRepository.GetByIdAsync(Id);
+    }
+}
+
+@if (book == null)
+{
+  <p>Boken kunde inte hittas.</p>
+}
+else
+{
+  <div>
+    <p><strong>ISBN:</strong> @book.ISBN</p>
+    <p><strong>Titel:</strong> @book.Title</p>
+    <p><strong>Författare:</strong> @book.Author</p>
+    <p><strong>Utgivningsår:</strong> @book.PublishedYear</p>
+    <p><strong>Status:</strong> @(book.IsAvailable ? "Tillgänglig" : "Utlånad")</p>
+  </div>
+}

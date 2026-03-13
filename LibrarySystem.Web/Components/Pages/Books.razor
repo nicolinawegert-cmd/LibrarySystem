@@ -64,6 +64,9 @@ else
           <td>@book.Author</td>
           <td>@book.PublishedYear</td>
           <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
+          <td>
+            <a href="/books/@book.Id">@book.Title</a>
+          </td>
         </tr>
       }
     </tbody>
