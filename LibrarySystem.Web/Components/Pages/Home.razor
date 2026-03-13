@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject LibraryContext Db
 
 <PageTitle>Startsida</PageTitle>
 
@@ -6,8 +7,53 @@
 
 <p>Välkommen till bibliotekets startsida.</p>
 
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h2>@totalBooks</h2>
+            <p>Totalt antal böcker</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h2>@availableBooks</h2>
+            <p>Tillgängliga böcker</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h2>@totalMembers</h2>
+            <p>Medlemmar</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h2>@activeLoans</h2>
+            <p>Aktiva lån</p>
+        </div>
+    </div>
+</div>
+
 <ul>
     <li><NavLink href="books">Böcker</NavLink></li>
     <li><NavLink href="members">Medlemmar</NavLink></li>
     <li><NavLink href="loans">Utlåning</NavLink></li>
 </ul>
+
+@code {
+    private int totalBooks;
+    private int availableBooks;
+    private int totalMembers;
+    private int activeLoans;
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalBooks = await Db.Books.CountAsync();
+        availableBooks = await Db.Books.CountAsync(b => b.IsAvailable);
+        totalMembers = await Db.Members.CountAsync();
+        activeLoans = await Db.Loans.CountAsync(l => l.ReturnDate == null);
+    }   
+}
