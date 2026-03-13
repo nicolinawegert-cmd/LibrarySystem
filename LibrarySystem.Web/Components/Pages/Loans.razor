@@ -1,5 +1,5 @@
 @page "/loans"
-@inject LibraryContext Context
+@inject LibraryContext Db
 @inject LoanService LoanService
 
 <PageTitle>Utlåning</PageTitle>
@@ -72,7 +72,7 @@ else
           <td>@(isOverdue ? "Försenad" : "Aktiv")</td>
           <td>
             <button class="btn btn-sm btn-outline-success" @onclick="() => HandleReturnLoan(loan.Id)">
-              Retunera
+              Returnera
             </button>
           </td>
         </tr>
@@ -84,7 +84,7 @@ else
 @code {
   private List<Book> availableBooks = new();
   private List<Member> members = new();
-  private List<Loan> activeloans = new();
+  private List<Loan> activeLoans = new();
 
   private int selectedBookId;
   private int selectedMemberId;
@@ -99,16 +99,16 @@ else
 
   private async Task LoadPageData()
   {
-    availableBooks = await Context.Books
+    availableBooks = await Db.Books
       .Where(b => b.IsAvailable)
       .OrderBy(b => b.Title)
       .ToListAsync();
 
-    members = await Context.Members
+    members = await Db.Members
       .OrderBy(m => m.Name)
       .ToListAsync();
 
-    activeloans = await Context.Loans
+    activeLoans = await Db.Loans
       .Include(l => l.Book)
       .Include(l => l.Member)
       .Where(l => l.ReturnDate == null)
