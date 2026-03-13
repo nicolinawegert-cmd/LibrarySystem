@@ -1,0 +1,50 @@
+@page "/books"
+@inject IBookRepository BookRepository
+
+<PageTitle>Böcker</PageTitle> 
+
+<h1>Böcker</h1>
+
+@if (books is null)
+{
+  <p>Laddar böcker...</p>
+}
+else if (!books.Any())
+{
+  <p>Det finns inga böcker i databasen ännu</p>
+}
+else
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ISBN</th>
+        <th>Titel</th>
+        <th>Författare</th>
+        <th>År</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var book in books)
+      {
+        <tr>
+          <td>@book.ISBN</td>
+          <td>@book.Title</td>
+          <td>@book.Author</td>
+          <td>@book.PublishedYear</td>
+          <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@code {
+  private IEnumerable<Book>? books;
+
+  protected override async Task OnInitializedAsync()
+  {
+    books = await BookRepository.GetAllAsync();
+  }
+}
