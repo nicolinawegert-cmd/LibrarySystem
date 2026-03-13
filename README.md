@@ -192,27 +192,6 @@ Testerna täcker bland annat:
 - xUnit
 - bUnit
 
-## Screenshots
-
-Inför inlämning bör README kompletteras med screenshots från:
-
-- startsidan
-- boklistan
-- bokdetaljer
-- medlemmar
-- utlåning
-
-Exempel på struktur:
-
-```text
-screenshots/
-├── home.png
-├── books.png
-├── book-details.png
-├── members.png
-└── loans.png
-```
-
 ## Kommentar
 
 Huvudfokus i Del 2 är integrationen mellan Entity Framework Core, datalagret och Blazor-gränssnittet. Konsolprojektet från Del 1 finns kvar som separat körbar del i lösningen.
