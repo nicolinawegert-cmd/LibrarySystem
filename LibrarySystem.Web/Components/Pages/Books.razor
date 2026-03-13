@@ -69,6 +69,7 @@ else if (!books.Any())
 else
 {
   <h2>Kortvy</h2>
+
   @foreach (var book in books)
   {
     <BookCard Book="book" />
@@ -133,13 +134,13 @@ else
 
   private class AddBookFormModel
   {
-    [Required(ErrorMessage = "ISBN är obligatoriskt.")]
+    [Required(ErrorMessage = "ISBN är obligatorisk.")]
     public string ISBN { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Titel är obligatoriskt.")]
+    [Required(ErrorMessage = "Titel är obligatorisk.")]
     public string Title { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Författare är obligatoriskt.")]
+    [Required(ErrorMessage = "Författare är obligatorisk.")]
     public string Author { get; set; } = string.Empty;
 
     [Range(1000, 2100, ErrorMessage = "Ange ett giltigt utgivningsår.")]
@@ -153,6 +154,7 @@ else
 
   private async Task LoadAllBooks()
   {
+    searchTerm = string.Empty;
     books = (await BookRepository.GetAllAsync()).ToList();
   }
 
@@ -225,6 +227,5 @@ else
     {
       addBookError = ex.Message;
     }
-
   }
 }
