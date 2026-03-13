@@ -1,26 +1,26 @@
 # LibrarySystem
 
-Bibliotekssystem byggt i C# och .NET med fokus pa objektorientering, Entity Framework Core och Blazor.
+Bibliotekssystem byggt i C# och .NET med fokus på objektorientering, Entity Framework Core och Blazor.
 
-Projektet ar uppdelat i flera delar:
+Projektet är uppdelat i flera delar:
 
-- `LibrarySystem.Core` innehaller modeller och domanlogik
-- `LibrarySystem.Data` innehaller `LibraryContext`, migrationer och dataatkomst
-- `LibrarySystem.Web` ar Blazor-webbgranssnittet
-- `LibrarySystem.App` ar konsolprojektet fran tidigare del
-- `LibrarySystem.Tests` innehaller tester for Del 1
-- `LibrarySystem.Data.Tests` innehaller tester for Del 2
+- `LibrarySystem.Core` innehåller modeller och domänlogik
+- `LibrarySystem.Data` innehåller `LibraryContext`, migrationer och dataåtkomst
+- `LibrarySystem.Web` är Blazor-webbgränssnittet
+- `LibrarySystem.App` är konsolprojektet från tidigare del
+- `LibrarySystem.Tests` innehåller tester för Del 1
+- `LibrarySystem.Data.Tests` innehåller tester för Del 2
 
 ## Funktioner
 
-Webbapplikationen innehaller bland annat:
+Webbapplikationen innehåller bland annat:
 
 - startsida med snabbstatistik
-- boklista med sokning, sortering och kortvy
-- bokdetaljer med lanehistorik
+- boklista med sökning, sortering och kortvy
+- bokdetaljer med lånehistorik
 - skapa och ta bort bok
 - medlemslista och registrering av ny medlem
-- skapa lan och returnera lan
+- skapa lån och returnera lån
 - datalagring med SQLite via Entity Framework Core
 
 ## Projektstruktur
@@ -48,7 +48,7 @@ Databasen hanteras av Entity Framework Core med SQLite.
 - `PublishedYear`
 - `IsAvailable`
 
-En bok kan ha flera lan via relationen till `Loan`.
+En bok kan ha flera lån via relationen till `Loan`.
 
 ### Member
 
@@ -58,7 +58,7 @@ En bok kan ha flera lan via relationen till `Loan`.
 - `Email`
 - `MemberSince`
 
-En medlem kan ha flera lan via relationen till `Loan`.
+En medlem kan ha flera lån via relationen till `Loan`.
 
 ### Loan
 
@@ -69,7 +69,7 @@ En medlem kan ha flera lan via relationen till `Loan`.
 - `DueDate`
 - `ReturnDate`
 
-Varje lan kopplas till exakt en bok och exakt en medlem.
+Varje lån kopplas till exakt en bok och exakt en medlem.
 
 ### Relationer
 
@@ -80,25 +80,25 @@ Varje lan kopplas till exakt en bok och exakt en medlem.
 
 ## Databasschema
 
-Tabellstrukturen i databasen bestar av:
+Tabellstrukturen i databasen består av:
 
 - `Books`
 - `Members`
 - `Loans`
 - `__EFMigrationsHistory`
 
-Forhallandet mellan tabellerna:
+Förhållandet mellan tabellerna:
 
 ```text
 Books (Id) ----< Loans (BookId)
 Members (Id) --< Loans (MemberId)
 ```
 
-## Sa kor du projektet
+## Så kör du projektet
 
-Utga fran losningens rotmapp.
+Utgå från lösningens rotmapp.
 
-### 1. Bygg losningen
+### 1. Bygg lösningen
 
 ```bash
 dotnet build
@@ -116,9 +116,9 @@ dotnet ef database update --project LibrarySystem.Data --startup-project Library
 dotnet run --project LibrarySystem.Web
 ```
 
-### 4. Oppna i webblasaren
+### 4. Öppna i webbläsaren
 
-Standardadress ar normalt:
+Standardadress är normalt:
 
 ```text
 https://localhost:xxxx
@@ -130,7 +130,7 @@ eller
 http://localhost:xxxx
 ```
 
-### 5. Kor tester
+### 5. Kör tester
 
 Alla tester:
 
@@ -152,31 +152,31 @@ De testar bland annat:
 
 - `BookRepository`
 - CRUD-operationer mot datalagret
-- sokning och hamtning via repository
-- integrationsfloden i `LoanService`
-- utlanning och returnering av bocker
+- sökning och hämtning via repository
+- integrationsflöden i `LoanService`
+- utlåning och returnering av böcker
 
-Projektet innehaller minst 10 nya tester for Del 2 och passerar lokalt.
+Projektet innehåller minst 10 nya tester för Del 2 och passerar lokalt.
 
 ## Blazor-sidor
 
-Foljande sidor finns i webbprojektet:
+Följande sidor finns i webbprojektet:
 
 - `/` startsida med statistik
 - `/books` boklista
 - `/books/{id}` bokdetaljer
 - `/members` medlemslista
-- `/loans` hantering av lan
+- `/loans` hantering av lån
 
 ## Screenshots
 
-Lagg in screenshots har innan inlamning:
+Lägg in screenshots här innan inlämning:
 
 - Startsida
 - Boklista
 - Bokdetaljer
 - Medlemmar
-- Utlanning
+- Utlåning
 
 Exempel:
 
@@ -194,8 +194,8 @@ Exempel:
 - Blazor Server via .NET Blazor Web App
 - Entity Framework Core
 - SQLite
-- xUnit for enhetstester
+- xUnit för enhetstester
 
 ## Kommentar
 
-Konsolprojektet fran tidigare del finns kvar i losningen, men huvudfokus i Del 2 ar datalagret och webbgranssnittet.
+Konsolprojektet från tidigare del finns kvar i lösningen, men huvudfokus i Del 2 är datalagret och webbgränssnittet.
