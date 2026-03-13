@@ -1,5 +1,5 @@
 @page "/members"
-@inject LibraryContext Context
+@inject LibraryContext Db
 
 <PageTitle>Medlemmar</PageTitle>
 
@@ -10,7 +10,7 @@
   
   protected override async Task OnInitializedAsync()
   {
-    members = await Context.Members
+    members = await Db.Members
       .Include(m => m.Loans)
       .OrderBy(m => m.Name)
       .ToListAsync();
@@ -40,7 +40,7 @@ else
       @foreach (var member in members)
       {
         <tr>
-          <td>@member.Id</td>
+          <td>@member.MemberId</td>
           <td>@member.Name</td>
           <td>@member.Email</td>
           <td>@member.Loans.Count(l => !l.IsReturned)</td>
