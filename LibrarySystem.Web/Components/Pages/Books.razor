@@ -48,6 +48,13 @@
   <button type="submit" class="btn btn-success">Spara bok</button>
 </EditForm>
 
+<h2>Kortvy</h2>
+
+@foreach (var book in books)
+{
+  <BookCard Book="book" />
+}
+
 @if (!string.IsNullOrWhiteSpace(addBookMessage))
 {
   <p class="text-success">@addBookMessage</p>
