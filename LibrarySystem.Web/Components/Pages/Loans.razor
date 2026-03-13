@@ -42,7 +42,7 @@
 
 <h2>Aktiva lån</h2>
 
-@if (!activeloans.Any())
+@if (!activeLoans.Any())
 {
   <p>Det finns inga aktiva lån.</p>
 }
@@ -60,7 +60,7 @@ else
       </tr>
     </thead>
     <tbody>
-      @foreach (var loan in activeloans)
+      @foreach (var loan in activeLoans)
       {
         var isOverdue = loan.DueDate.Date < DateTime.UtcNow.Date;
 
