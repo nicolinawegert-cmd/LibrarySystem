@@ -1,7 +1,53 @@
 @page "/members"
+@inject LibraryContext Context
 
 <PageTitle>Medlemmar</PageTitle>
 
 <h1>Medlemmar</h1>
 
 <p>Här kan du hantera bibliotekets medlemmar.</p>
+
+@code {
+  private List<Member>? members;
+  
+  protected override async Task OnInitializedAsync()
+  {
+    members = await Context.Members
+      .Include(m => m.Loans)
+      .OrderBy(m => m.Name)
+      .ToListAsync();
+  }
+}
+
+@if (members == null)
+{
+  <p>Laddar medlemmar...</p>
+}
+else if (!members.Any())
+{
+  <p>Inga medlemmar hittades.</p>
+}
+else
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Medlemsnummer</th>
+        <th>Namn</th>
+        <th>E-post</th>
+        <th>Aktiva lån</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var member in members)
+      {
+        <tr>
+          <td>@member.Id</td>
+          <td>@member.Name</td>
+          <td>@member.Email</td>
+          <td>@member.Loans.Count(l => !l.IsReturned)</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
