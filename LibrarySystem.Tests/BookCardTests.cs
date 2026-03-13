@@ -22,7 +22,7 @@ public class BookCardTests : TestContext
     Assert.Contains("ISBN:", cut.Markup);
     Assert.Contains("123", cut.Markup);
     Assert.Contains("Tillgänglig", cut.Markup);
-    cut.Find("span").ClassList.Contains("bg-success");
+    Assert.True(cut.Find("span").ClassList.Contains("bg-success"));
   }
 
   [Fact]
@@ -39,6 +39,22 @@ public class BookCardTests : TestContext
     // Assert
     Assert.Contains("Utlånad bok", cut.Markup);
     Assert.Contains("Utlånad", cut.Markup);
-    cut.Find("span").ClassList.Contains("bg-danger");
+    Assert.True(cut.Find("span").ClassList.Contains("bg-danger"));
+  }
+
+  [Fact]
+  public void BookCard_ShouldRenderExpectedBadgeStructure()
+  {
+    // Arrange
+    var book = new Book("789", "Design Patterns", "Gamma", 1994);
+
+    // Act
+    var cut = RenderComponent<BookCard>(parameters =>
+      parameters.Add(p => p.Book, book));
+
+    // Assert
+    var badge = cut.Find("span.badge");
+    Assert.Contains("bg-success", badge.ClassName);
+    Assert.Equal("Tillgänglig", badge.TextContent.Trim());
   }
 }
