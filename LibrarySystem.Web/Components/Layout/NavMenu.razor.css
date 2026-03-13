@@ -17,11 +17,15 @@
 
 .top-row {
     min-height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(46, 30, 22, 0.35);
+    border-bottom: 1px solid rgba(255, 243, 228, 0.12);
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff6ea;
+    letter-spacing: 0.04em;
 }
 
 .bi {
@@ -47,8 +51,8 @@
 }
 
 .nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+    font-size: 0.96rem;
+    padding-bottom: 0.35rem;
 }
 
     .nav-item:first-of-type {
@@ -60,25 +64,29 @@
     }
 
     .nav-item ::deep .nav-link {
-        color: #d7d7d7;
+        color: rgba(255, 244, 234, 0.88);
         background: none;
         border: none;
-        border-radius: 4px;
+        border-radius: 14px;
         height: 3rem;
         display: flex;
         align-items: center;
         line-height: 3rem;
         width: 100%;
+        padding-inline: 1rem;
+        transition: background-color 0.18s ease, transform 0.18s ease, color 0.18s ease;
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
+    background-color: rgba(255, 246, 234, 0.22);
     color: white;
+    box-shadow: inset 0 0 0 1px rgba(255, 244, 234, 0.16);
 }
 
 .nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 246, 234, 0.14);
     color: white;
+    transform: translateX(2px);
 }
 
 .nav-scrollable {
@@ -101,5 +109,6 @@
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+        padding: 0.75rem 0.75rem 1.25rem;
     }
 }

@@ -9,40 +9,44 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background:
+        radial-gradient(circle at top, rgba(205, 168, 129, 0.18), transparent 30%),
+        linear-gradient(180deg, #2f231d 0%, #4c3428 62%, #6f4935 100%);
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
+    background: rgba(255, 251, 245, 0.66);
+    border-bottom: 1px solid rgba(122, 79, 53, 0.14);
+    backdrop-filter: blur(12px);
+    justify-content: space-between;
+    min-height: 4.25rem;
     display: flex;
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
+.top-row-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
+.top-row-label {
+    color: #563321;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.top-row-text {
+    color: #736254;
+    font-size: 0.92rem;
+}
 
 @media (max-width: 640.98px) {
     .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
+        min-height: 3.75rem;
     }
 }
 
@@ -52,35 +56,35 @@ main {
     }
 
     .sidebar {
-        width: 250px;
+        width: 280px;
         height: 100vh;
         position: sticky;
         top: 0;
+        box-shadow: 18px 0 36px rgba(46, 36, 31, 0.08);
     }
 
     .top-row {
         position: sticky;
         top: 0;
-        z-index: 1;
-    }
-
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
+        z-index: 2;
     }
 
     .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+        padding-left: 2.5rem !important;
+        padding-right: 2rem !important;
     }
+}
+
+.content {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 #blazor-error-ui {
     color-scheme: light only;
-    background: lightyellow;
+    background: #fff5d9;
     bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -8px 30px rgba(46, 36, 31, 0.14);
     box-sizing: border-box;
     display: none;
     left: 0;

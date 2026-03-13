@@ -4,61 +4,84 @@
 <PageTitle>Startsida</PageTitle>
 
 <section class="hero-panel mb-4">
+    <span class="eyebrow">Digitalt bibliotek</span>
     <h1>Bibliotekssystem</h1>
-    <p>Hantera böcker, medlemmar och utlåning i ett gemensamt webbgränssnitt.</p>
+    <p>Hantera bokbeståndet, medlemmar och aktiva lån i ett sammanhållet gränssnitt byggt med Blazor och Entity Framework Core.</p>
 </section>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h2>@totalBooks</h2>
-            <p>Totalt antal böcker</p>
-        </div>
-    </div>
+<section class="mb-4">
+    <h2 class="section-title">Snabbstatistik</h2>
+    <p class="section-subtitle">En översikt över bibliotekets viktigaste nyckeltal just nu.</p>
 
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h2>@availableBooks</h2>
-            <p>Tillgängliga böcker</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h2>@totalMembers</h2>
-            <p>Medlemmar</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card p-3">
-            <h2>@activeLoans</h2>
-            <p>Aktiva lån</p>
-        </div>
-    </div>
-
-    <section class="quick-links">
-        <h2>Snabbnavigering</h2>
-        <div class="row g-3">
-            <div class="col-md-4">
-                <a class="quick-link-card" href="/books">Böcker</a>
-            </div>
-            <div class="col-md-4">
-                <a class="quick-link-card" href="/members">Medlemmar</a>
-            </div>
-            <div class="col-md-4">
-                <a class="quick-link-card" href="/loans">Utlåning</a>
+    <div class="row g-3">
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <p>Totalt antal böcker</p>
+                <h2>@totalBooks</h2>
             </div>
         </div>
-    </section>
-</div>
 
-<h2>Gå vidare</h2>
-<ul>
-    <li><NavLink href="books">Böcker</NavLink></li>
-    <li><NavLink href="members">Medlemmar</NavLink></li>
-    <li><NavLink href="loans">Utlåning</NavLink></li>
-</ul>
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <p>Tillgängliga böcker</p>
+                <h2>@availableBooks</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <p>Registrerade medlemmar</p>
+                <h2>@totalMembers</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <p>Aktiva lån</p>
+                <h2>@activeLoans</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content-panel mb-4">
+    <h2 class="section-title">Snabbnavigering</h2>
+    <p class="section-subtitle">Gå direkt till de viktigaste delarna av systemet.</p>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a class="quick-link-card" href="/books">
+                <strong>Böcker</strong>
+                <span>Visa hela katalogen, sök, sortera och hantera bokposter.</span>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a class="quick-link-card" href="/members">
+                <strong>Medlemmar</strong>
+                <span>Se medlemslistan och registrera nya medlemmar i systemet.</span>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a class="quick-link-card" href="/loans">
+                <strong>Utlåning</strong>
+                <span>Skapa nya lån, returnera böcker och följ försenade lån.</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="content-panel">
+    <h2 class="section-title">Använd appen</h2>
+    <p class="section-subtitle">Det här är de vanligaste arbetsflödena i webbgränssnittet.</p>
+
+    <ul class="link-list">
+        <li><a href="/books">Lägg till en ny bok eller öppna bokdetaljer för att se lånehistorik.</a></li>
+        <li><a href="/members">Registrera en ny medlem och se antal aktiva lån per person.</a></li>
+        <li><a href="/loans">Skapa ett nytt lån eller returnera en bok direkt från lånesidan.</a></li>
+    </ul>
+</section>
 
 @code {
     private int totalBooks;
