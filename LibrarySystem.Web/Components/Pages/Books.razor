@@ -5,7 +5,7 @@
 
 <h1>Böcker</h1>
 
-<p>Sortering: @currentSortColumn (@(sortAscending ? "Stigande" : "Fallande"))</p>
+<p>Sortering: @currentSortColumn (@(sortAscending? "Stigande" : "Fallande"))</p>
 
 <div class="mb-3">
   <label for="searchTerm" class="form-label">Sök bok</label>
@@ -15,6 +15,44 @@
 <button class="btn btn-primary mb-2" @onclick="HandleSearch">Sök</button>
 <button class="btn btn-secondary mb-2 ms-2" @onclick="LoadAllBooks">Visa alla</button>
 
+<h2>Lägg till ny bok</h2>
+
+<EditForm Model="@newBook" OnValidSubmit="HandleAddBook">
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+
+  <div class="mb-3">
+    <label class="form-label">ISBN</label>
+    <InputText class="form-control" @bind-Value="newBook.ISBN" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Titel</label>
+    <InputText class="form-control" @bind-Value="newBook.Title" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Författare</label>
+    <InputText class="form-control" @bind-Value="newBook.Author" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Utgivningsår</label>
+    <InputNumber class="form-control" @bind-Value="newBook.PublishedYear" />
+  </div>
+
+  <button type="submit" class="btn btn-success">Spara bok</button>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(addBookMessage))
+{
+  <p class="text-success">@addBookMessage</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(addBookError))
+{
+  <p class="text-danger">@addBookError</p>
+}
 @if (books is null)
 {
   <p>Laddar böcker...</p>
@@ -65,18 +103,31 @@ else
           </td>
           <td>@book.Author</td>
           <td>@book.PublishedYear</td>
-          <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
+          <td>@(book.IsAvailable? "Tillgänglig" : "Utlånad")</td>
         </tr>
       }
     </tbody>
   </table>
 }
 
+
 @code {
   private List<Book>? books;
   private string searchTerm = string.Empty;
   private string currentSortColumn = nameof(Book.Title);
   private bool sortAscending = true;
+  private AddBookFormModel newBook = new();
+  private string? addBookMessage;
+  private string? addBookError;
+
+  private class AddBookFormModel
+  {
+    public string ISBN { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Author { get; set; } = string.Empty;
+    public int PublishedYear { get; set; }
+
+  }
 
   protected override async Task OnInitializedAsync()
   {
@@ -132,5 +183,31 @@ else
 
       _ => books
     };
+  }
+
+  private async Task HandleAddBook()
+  {
+    addBookError = null;
+    addBookMessage = null;
+
+    try
+    {
+      var book = new Book(
+        newBook.ISBN,
+        newBook.Title,
+        newBook.Author,
+        newBook.PublishedYear);
+
+      await BookRepository.AddAsync(book);
+
+      addBookMessage = "Boken sparades.";
+      newBook = new AddBookFormModel();
+      await LoadAllBooks();
+    }
+    catch (InvalidOperationException ex)
+    {
+      addBookError = ex.Message;
+    }
+
   }
 }
