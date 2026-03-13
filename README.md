@@ -24,8 +24,12 @@ Webbapplikationen innehåller följande funktioner:
 - medlemslista med antal aktiva lån per medlem
 - skapa, redigera och ta bort medlemmar
 - medlemsdetaljer med aktuella lån
-- formulär för att skapa lån
+- skapa nya lån
+- redigera aktiva lån genom att ändra förfallodatum
+- returnera aktiva lån
+- ta bort avslutade lån
 - lista över aktiva lån med markering av försenade lån
+- lista över avslutade lån
 - datalagring med SQLite via Entity Framework Core
 
 ## Projektstruktur
@@ -178,10 +182,11 @@ Lösningen innehåller två testprojekt:
 Testerna täcker bland annat:
 
 - skapa, hämta, söka, uppdatera och ta bort böcker
-- utlåning och återlämning
+- skapa, uppdatera, returnera och ta bort lån
 - felhantering när bok, medlem eller lån saknas
 - case-insensitive sökning i bokrepository
 - rendering av `BookCard` med bUnit
+- bUnit-tester för sidorna `Books`, `Members` och `Loans`
 
 ## Teknik
 
