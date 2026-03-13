@@ -39,6 +39,13 @@ public class Member
     _borrowedBooks.Remove(book);
   }
 
+  public void UpdateDetails(string memberId, string name, string email)
+  {
+    MemberId = memberId;
+    Name = name;
+    Email = email;
+  }
+
   public string GetInfo()
   {
     return $"{Name} ({MemberId}) - {Email} | Medlem sedan: {MemberSince:yyyy-MM-dd} | Lån: {BorrowedBooks.Count}";

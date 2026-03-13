@@ -1,6 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
 using LibrarySystem.Core.Abstractions;
-using LibrarySystem.Core.Models;
 
 namespace LibrarySystem.Core.Models;
 
@@ -9,7 +7,7 @@ public class Book : ISearchable
 { 
   public int Id { get; set; }
 
-  public string ISBN { get; } = string.Empty;
+  public string ISBN { get; private set; } = string.Empty;
   public string Title { get; private set; } = string.Empty;
   public string Author { get; private set; } = string.Empty;
   public int PublishedYear { get; private set; }
@@ -49,4 +47,12 @@ public class Book : ISearchable
   }
   
   public void UpdateTitle(string title) => Title = title;
+
+  public void UpdateDetails(string isbn, string title, string author, int publishedYear)
+  {
+    ISBN = isbn;
+    Title = title;
+    Author = author;
+    PublishedYear = publishedYear;
+  }
 }
