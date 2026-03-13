@@ -128,7 +128,9 @@ else
       {
         <tr>
           <td>@member.MemberId</td>
-          <td>@member.Name</td>
+          <td>
+            <a href="/members/@member.Id">@member.Name</a>
+          </td>
           <td>@member.Email</td>
           <td>@member.Loans.Count(l => !l.IsReturned)</td>
         </tr>

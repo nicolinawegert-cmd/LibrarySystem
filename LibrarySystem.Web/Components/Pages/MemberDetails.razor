@@ -1,0 +1,66 @@
+@page "/members/{id:int}"
+@inject LibraryContext Db
+
+<PageTitle>Medlemsdetaljer</PageTitle>
+
+@if (member is null)
+{
+  <p>Medlemmen kunde inte hittas.</p>
+}
+else
+{
+  <h1>Medlemsdetaljer</h1>
+
+  <div class="content-panel mb-4">
+    <p><strong>Medlemsnummer:</strong> @member.MemberId</p>
+    <p><strong>Namn:</strong> @member.Name</p>
+    <p><strong>E-post:</strong> @member.Email</p>
+    <p><strong>Medlem sedan:</strong> @member.MemberSince.ToShortDateString()</p>
+  </div>
+
+  <h2>Aktiva lån</h2>
+
+  @if (!member.Loans.Any(l => !l.IsReturned))
+  {
+    <p>Medlemmen har inga aktiva lån.</p>
+  }
+  else
+  {
+    <div class="table-shell">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Bok</th>
+            <th>Lånedatum</th>
+            <th>Förfallodatum</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var loan in member.Loans.Where(l => !l.IsReturned))
+          {
+            <tr>
+              <td>@loan.Book?.Title</td>
+              <td>@loan.LoanDate.ToShortDateString()</td>
+              <td>@loan.DueDate.ToShortDateString()</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}
+
+@code {
+  [Parameter]
+  public int Id { get; set; }
+
+  private Member? member;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    member = await Db.Members
+      .Include(m => m.Loans)
+      .ThenInclude(l => l.Book)
+      .FirstOrDefaultAsync(m => m.Id == Id);
+  }
+}
