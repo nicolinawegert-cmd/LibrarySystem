@@ -50,13 +50,18 @@
 
 @if (!string.IsNullOrWhiteSpace(addBookMessage))
 {
-  <p class="text-success">@addBookMessage</p>
+  <div class="alert alert-success" role="alert">
+    @addBookMessage
+  </div>
 }
 
 @if (!string.IsNullOrWhiteSpace(addBookError))
 {
-  <p class="text-danger">@addBookError</p>
+  <div class="alert alert-danger" role="alert">
+    @addBookError
+  </div>
 }
+
 
 @if (books is null)
 {
@@ -233,6 +238,11 @@ else
     {
       addBookError = ex.Message;
     }
+    catch (Exception)
+    {
+      addBookError = "Ett oväntat fel uppstod när boken skulle sparas.";
+    }
+
   }
 
   private async Task HandleDeleteBook(int id)
@@ -249,6 +259,10 @@ else
     catch (InvalidOperationException ex)
     {
       addBookError = ex.Message;
+    }
+    catch (Exception)
+    {
+      addBookError = "Ett oväntat fel uppstod när boken skulle tas bort.";
     }
   }
 }
