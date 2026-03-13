@@ -1,26 +1,31 @@
 # LibrarySystem
 
-Bibliotekssystem byggt i C# och .NET med fokus på objektorientering, Entity Framework Core och Blazor.
+Bibliotekssystem byggt i C# och .NET med Entity Framework Core, SQLite och Blazor Server.
 
-Projektet är uppdelat i flera delar:
+Lösningen vidareutvecklar bibliotekssystemet från Del 1 med databashantering, webbgränssnitt och tester för datalagret.
+
+## Projektöversikt
 
 - `LibrarySystem.Core` innehåller modeller och domänlogik
-- `LibrarySystem.Data` innehåller `LibraryContext`, migrationer och dataåtkomst
-- `LibrarySystem.Web` är Blazor-webbgränssnittet
-- `LibrarySystem.App` är konsolprojektet från tidigare del
-- `LibrarySystem.Tests` innehåller tester för Del 1
-- `LibrarySystem.Data.Tests` innehåller tester för Del 2
+- `LibrarySystem.Data` innehåller `LibraryContext`, migrationer, repositories och tjänster för dataåtkomst
+- `LibrarySystem.Web` innehåller Blazor-webbgränssnittet
+- `LibrarySystem.App` innehåller konsolapplikationen från tidigare del
+- `LibrarySystem.Tests` innehåller tester för grundfunktioner och Blazor-komponenten `BookCard`
+- `LibrarySystem.Data.Tests` innehåller tester för repository och integrationsflöden i datalagret
 
 ## Funktioner
 
-Webbapplikationen innehåller bland annat:
+Webbapplikationen innehåller följande funktioner:
 
-- startsida med snabbstatistik
-- boklista med sökning, sortering och kortvy
-- bokdetaljer med lånehistorik
-- skapa och ta bort bok
-- medlemslista och registrering av ny medlem
-- skapa lån och returnera lån
+- startsida med snabbstatistik för böcker, medlemmar och aktiva lån
+- boklista med sökning, sortering, kortvy och tabellvy
+- skapa, redigera och ta bort böcker
+- bokdetaljer med lånehistorik samt låna och returnera bok
+- medlemslista med antal aktiva lån per medlem
+- skapa, redigera och ta bort medlemmar
+- medlemsdetaljer med aktuella lån
+- formulär för att skapa lån
+- lista över aktiva lån med markering av försenade lån
 - datalagring med SQLite via Entity Framework Core
 
 ## Projektstruktur
@@ -73,26 +78,43 @@ Varje lån kopplas till exakt en bok och exakt en medlem.
 
 ### Relationer
 
-- `Book 1 -> many Loan`
-- `Member 1 -> many Loan`
-- `Loan many -> 1 Book`
-- `Loan many -> 1 Member`
+```text
+Book    1 ----< many Loan
+Member  1 ----< many Loan
+Loan many >---- 1 Book
+Loan many >---- 1 Member
+```
 
 ## Databasschema
 
-Tabellstrukturen i databasen består av:
+Tabeller i databasen:
 
 - `Books`
 - `Members`
 - `Loans`
 - `__EFMigrationsHistory`
 
-Förhållandet mellan tabellerna:
+Förenklad struktur:
 
 ```text
-Books (Id) ----< Loans (BookId)
-Members (Id) --< Loans (MemberId)
+Books   (Id, ISBN, Title, Author, PublishedYear, IsAvailable)
+Members (Id, MemberId, Name, Email, MemberSince)
+Loans   (Id, BookId, MemberId, LoanDate, DueDate, ReturnDate)
+
+Books.Id   ----< Loans.BookId
+Members.Id ----< Loans.MemberId
 ```
+
+## Blazor-sidor
+
+Webbprojektet innehåller följande sidor:
+
+- `/` startsida
+- `/books` boklista
+- `/books/{id}` bokdetaljer
+- `/members` medlemslista
+- `/members/{id}` medlemsdetaljer
+- `/loans` utlåning
 
 ## Så kör du projektet
 
@@ -101,14 +123,16 @@ Utgå från lösningens rotmapp.
 ### 1. Bygg lösningen
 
 ```bash
-dotnet build
+dotnet build LibrarySystem.sln
 ```
 
-### 2. Uppdatera databasen med migrationer
+### 2. Uppdatera databasen
 
 ```bash
 dotnet ef database update --project LibrarySystem.Data --startup-project LibrarySystem.Web
 ```
+
+`LibrarySystem.Web` är konfigurerat att använda en gemensam SQLite-databas i `LibrarySystem.App/library.db`.
 
 ### 3. Starta webbappen
 
@@ -116,86 +140,79 @@ dotnet ef database update --project LibrarySystem.Data --startup-project Library
 dotnet run --project LibrarySystem.Web
 ```
 
-### 4. Öppna i webbläsaren
+### 4. Starta konsolappen
 
-Standardadress är normalt:
-
-```text
-https://localhost:xxxx
+```bash
+dotnet run --project LibrarySystem.App
 ```
 
-eller
-
-```text
-http://localhost:xxxx
-```
+Konsolappen är valfri för Del 2 men finns kvar i lösningen.
 
 ### 5. Kör tester
 
 Alla tester:
 
 ```bash
-dotnet test
+dotnet test LibrarySystem.sln
 ```
 
-Endast Del 2-tester:
+Endast datalager-tester:
 
 ```bash
-dotnet test LibrarySystem.Data.Tests
+dotnet test LibrarySystem.Data.Tests/LibrarySystem.Data.Tests.csproj
 ```
 
-## Del 2-tester
+Endast grundtester och komponenttest:
 
-Del 2-testerna finns i projektet `LibrarySystem.Data.Tests`.
-
-De testar bland annat:
-
-- `BookRepository`
-- CRUD-operationer mot datalagret
-- sökning och hämtning via repository
-- integrationsflöden i `LoanService`
-- utlåning och returnering av böcker
-
-Projektet innehåller minst 10 nya tester för Del 2 och passerar lokalt.
-
-## Blazor-sidor
-
-Följande sidor finns i webbprojektet:
-
-- `/` startsida med statistik
-- `/books` boklista
-- `/books/{id}` bokdetaljer
-- `/members` medlemslista
-- `/loans` hantering av lån
-
-## Screenshots
-
-Lägg in screenshots här innan inlämning:
-
-- Startsida
-- Boklista
-- Bokdetaljer
-- Medlemmar
-- Utlåning
-
-Exempel:
-
-```text
-/screenshots/home.png
-/screenshots/books.png
-/screenshots/book-details.png
-/screenshots/members.png
-/screenshots/loans.png
+```bash
+dotnet test LibrarySystem.Tests/LibrarySystem.Tests.csproj
 ```
 
-## Teknisk sammanfattning
+## Tester
+
+Lösningen innehåller två testprojekt:
+
+- `LibrarySystem.Tests` för domänlogik och Blazor-komponenten `BookCard`
+- `LibrarySystem.Data.Tests` för `BookRepository`, CRUD-operationer och integrationsflöden i `LoanService`
+
+Testerna täcker bland annat:
+
+- skapa, hämta, söka, uppdatera och ta bort böcker
+- utlåning och återlämning
+- felhantering när bok, medlem eller lån saknas
+- case-insensitive sökning i bokrepository
+- rendering av `BookCard` med bUnit
+
+## Teknik
 
 - .NET 9
 - Blazor Server via .NET Blazor Web App
-- Entity Framework Core
+- Entity Framework Core 9
 - SQLite
-- xUnit för enhetstester
+- xUnit
+- bUnit
+
+## Screenshots
+
+Inför inlämning bör README kompletteras med screenshots från:
+
+- startsidan
+- boklistan
+- bokdetaljer
+- medlemmar
+- utlåning
+
+Exempel på struktur:
+
+```text
+screenshots/
+├── home.png
+├── books.png
+├── book-details.png
+├── members.png
+└── loans.png
+```
 
 ## Kommentar
 
-Konsolprojektet från tidigare del finns kvar i lösningen, men huvudfokus i Del 2 är datalagret och webbgränssnittet.
+Huvudfokus i Del 2 är integrationen mellan Entity Framework Core, datalagret och Blazor-gränssnittet. Konsolprojektet från Del 1 finns kvar som separat körbar del i lösningen.
