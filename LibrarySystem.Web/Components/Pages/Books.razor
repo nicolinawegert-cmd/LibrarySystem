@@ -5,6 +5,14 @@
 
 <h1>Böcker</h1>
 
+<div class="mb-3">
+  <label for="searchTerm" class="form-label">Sök bok</label>
+  <InputText id="searchTerm" class="form-control" @bind-Value="searchTerm" />
+</div>
+
+<button class="btn btn-primary mb-2" @onclick="HandleSearch">Sök</button>
+<button class="btn btn-secondary" @onclick="LoadAllBooks">Visa alla</button>
+
 @if (books is null)
 {
   <p>Laddar böcker...</p>
@@ -42,9 +50,20 @@ else
 
 @code {
   private IEnumerable<Book>? books;
+  private string searchTerm = string.Empty;
 
   protected override async Task OnInitializedAsync()
   {
+    await LoadAllBooks();
+  }
+
+  private async Task LoadAllBooks()
+  {
     books = await BookRepository.GetAllAsync();
+  }
+  
+  private async Task HandleSearch()
+  {
+    books = await BookRepository.SearchAsync(searchTerm);
   }
 }
