@@ -34,17 +34,11 @@ namespace LibrarySystem.Data.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Author = table.Column<string>(type: "TEXT", nullable: false),
                     PublishedYear = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
-                    MemberId = table.Column<int>(type: "INTEGER", nullable: true)
+                    IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Books_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -81,11 +75,6 @@ namespace LibrarySystem.Data.Migrations
                 table: "Books",
                 column: "ISBN",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_MemberId",
-                table: "Books",
-                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Loans_BookId",

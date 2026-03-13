@@ -37,9 +37,6 @@ namespace LibrarySystem.Data.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MemberId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("PublishedYear")
                         .HasColumnType("INTEGER");
 
@@ -51,8 +48,6 @@ namespace LibrarySystem.Data.Migrations
 
                     b.HasIndex("ISBN")
                         .IsUnique();
-
-                    b.HasIndex("MemberId");
 
                     b.ToTable("Books");
                 });
@@ -101,13 +96,6 @@ namespace LibrarySystem.Data.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("LibrarySystem.Core.Models.Book", b =>
-                {
-                    b.HasOne("LibrarySystem.Core.Models.Member", null)
-                        .WithMany("BorrowedBooks")
-                        .HasForeignKey("MemberId");
-                });
-
             modelBuilder.Entity("LibrarySystem.Core.Models.Loan", b =>
                 {
                     b.HasOne("LibrarySystem.Core.Models.Book", "Book")
@@ -134,8 +122,6 @@ namespace LibrarySystem.Data.Migrations
 
             modelBuilder.Entity("LibrarySystem.Core.Models.Member", b =>
                 {
-                    b.Navigation("BorrowedBooks");
-
                     b.Navigation("Loans");
                 });
 #pragma warning restore 612, 618
