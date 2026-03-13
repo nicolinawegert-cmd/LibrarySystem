@@ -79,15 +79,18 @@ else
 
   @if (!string.IsNullOrWhiteSpace(message))
   {
-    <p class="text-success">@message</p>
+    <div class="alert alert-success" role="alert">
+      @message
+    </div>
   }
 
   @if (!string.IsNullOrWhiteSpace(errorMessage))
   {
-    <p class="text-danger">@errorMessage</p>
+    <div class="alert alert-danger" role="alert">
+      @errorMessage
+    </div>
   }
 }
-
 
 @code {
   [Parameter]
@@ -118,12 +121,17 @@ else
     try
     {
       await LoanService.BorrowAsync(Id, selectedMemberId);
-      message = "Boken har lånats ut!";
+      message = "Boken lånades ut.";
       book = await BookRepository.GetByIdAsync(Id); 
     }
     catch (InvalidOperationException ex)
     {
       errorMessage = ex.Message;
     }
+    catch (Exception)
+    {
+      errorMessage = "Ett oväntat fel uppstod när boken skulle lånas ut.";
+    }
+
   }
 }
