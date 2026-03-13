@@ -34,13 +34,19 @@
 
 @if (!string.IsNullOrWhiteSpace(addMemberMessage))
 {
-  <p class="text-success">@addMemberMessage</p>
+  <div class="alert alert-success" role="alert">
+    @addMemberMessage
+  </div>
 }
 
 @if (!string.IsNullOrWhiteSpace(addMemberError))
 {
-  <p class="text-danger">@addMemberError</p>
+  <div class="alert alert-danger" role="alert">
+    @addMemberError
+  </div>
 }
+
+
 
 
 @code {
@@ -82,7 +88,7 @@
       Db.Members.Add(member);
       await Db.SaveChangesAsync();
 
-      addMemberMessage = "Medlem registrerad!";
+      addMemberMessage = "Medlem registrerades.";
       newMember = new AddMemberFormModel(); 
 
       members = await Db.Members
@@ -90,9 +96,13 @@
         .OrderBy(m => m.Name)
         .ToListAsync();
     }
-    catch (Exception ex)
+    catch (InvalidOperationException ex)
     {
       addMemberError = ex.Message;
+    }
+    catch (Exception)
+    {
+      addMemberError = "Ett oväntat fel uppstod när medlemmen skulle sparas.";
     }
   }
 }
