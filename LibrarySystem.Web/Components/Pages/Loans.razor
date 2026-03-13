@@ -6,7 +6,7 @@
 
 <div class="page-heading">
   <h1>Utlåning</h1>
-  <p>Skapa nya lån, följ förfallodatum och returnera böcker direkt i arbetsflödet.</p>
+  <p>Skapa nya lån, följ förfallodatum och hantera aktiva och avslutade lån.</p>
 </div>
 
 <section class="form-shell mb-4">
@@ -49,6 +49,32 @@
   </EditForm>
 </section>
 
+@if (isEditingLoan)
+{
+  <section class="form-shell mb-4">
+    <h2 class="section-title">Redigera lån</h2>
+    <p class="section-subtitle">Justera förfallodatum för ett aktivt lån.</p>
+
+    <EditForm Model="@editLoan" OnValidSubmit="HandleUpdateLoan" FormName="EditLoanForm">
+      <DataAnnotationsValidator />
+      <ValidationSummary />
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Förfallodatum</label>
+          <InputDate class="form-control" @bind-Value="editLoan.DueDate" />
+          <ValidationMessage For="@(() => editLoan.DueDate)" />
+        </div>
+      </div>
+
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Uppdatera lån</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="CancelEditLoan">Avbryt</button>
+      </div>
+    </EditForm>
+  </section>
+}
+
 @if (!string.IsNullOrWhiteSpace(message))
 {
   <div class="alert alert-success" role="alert">
@@ -69,7 +95,7 @@
 }
 else
 {
-  <section>
+  <section class="mb-4">
     <h2 class="section-title">Aktiva lån</h2>
 
     <div class="table-shell">
@@ -96,8 +122,48 @@ else
               <td>@loan.DueDate.ToShortDateString()</td>
               <td>@(isOverdue ? "Försenad" : "Aktiv")</td>
               <td>
+                <button class="btn btn-sm btn-outline-primary me-2" @onclick="() => StartEditLoan(loan)">
+                  Redigera
+                </button>
                 <button class="btn btn-sm btn-outline-success" @onclick="() => HandleReturnLoan(loan.Id)">
                   Returnera
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}
+
+@if (returnedLoans.Any())
+{
+  <section>
+    <h2 class="section-title">Avslutade lån</h2>
+
+    <div class="table-shell">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Bok</th>
+            <th>Medlem</th>
+            <th>Lånedatum</th>
+            <th>Returnerad</th>
+            <th>Åtgärd</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var loan in returnedLoans)
+          {
+            <tr>
+              <td>@loan.Book?.Title</td>
+              <td>@loan.Member?.Name</td>
+              <td>@loan.LoanDate.ToShortDateString()</td>
+              <td>@loan.ReturnDate?.ToShortDateString()</td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger" @onclick="() => HandleDeleteLoan(loan.Id)">
+                  Ta bort
                 </button>
               </td>
             </tr>
@@ -112,7 +178,10 @@ else
   private List<Book> availableBooks = new();
   private List<Member> members = new();
   private List<Loan> activeLoans = new();
+  private List<Loan> returnedLoans = new();
   private CreateLoanFormModel newLoan = new();
+  private EditLoanFormModel editLoan = new();
+  private bool isEditingLoan;
 
   private string? message;
   private string? errorMessage;
@@ -124,6 +193,14 @@ else
 
     [Range(1, int.MaxValue, ErrorMessage = "Välj en medlem.")]
     public int MemberId { get; set; }
+  }
+
+  private class EditLoanFormModel
+  {
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Förfallodatum är obligatoriskt.")]
+    public DateTime DueDate { get; set; }
   }
 
   protected override async Task OnInitializedAsync()
@@ -148,6 +225,13 @@ else
       .Where(l => l.ReturnDate == null)
       .OrderBy(l => l.DueDate)
       .ToListAsync();
+
+    returnedLoans = await Db.Loans
+      .Include(l => l.Book)
+      .Include(l => l.Member)
+      .Where(l => l.ReturnDate != null)
+      .OrderByDescending(l => l.ReturnDate)
+      .ToListAsync();
   }
 
   private async Task HandleCreateLoan()
@@ -155,7 +239,7 @@ else
     message = null;
     errorMessage = null;
 
-    try 
+    try
     {
       await LoanService.BorrowAsync(newLoan.BookId, newLoan.MemberId);
 
@@ -173,6 +257,50 @@ else
       errorMessage = "Ett oväntat fel inträffade när lånet skulle skapas.";
     }
   }
+
+  private void StartEditLoan(Loan loan)
+  {
+    isEditingLoan = true;
+    message = null;
+    errorMessage = null;
+    editLoan = new EditLoanFormModel
+    {
+      Id = loan.Id,
+      DueDate = loan.DueDate.Date
+    };
+  }
+
+  private void CancelEditLoan()
+  {
+    isEditingLoan = false;
+    editLoan = new EditLoanFormModel();
+    message = null;
+    errorMessage = null;
+  }
+
+  private async Task HandleUpdateLoan()
+  {
+    message = null;
+    errorMessage = null;
+
+    try
+    {
+      await LoanService.UpdateDueDateAsync(editLoan.Id, editLoan.DueDate);
+      message = "Lånet uppdaterades.";
+      isEditingLoan = false;
+      editLoan = new EditLoanFormModel();
+      await LoadPageData();
+    }
+    catch (InvalidOperationException ex)
+    {
+      errorMessage = ex.Message;
+    }
+    catch (Exception)
+    {
+      errorMessage = "Ett oväntat fel uppstod när lånet skulle uppdateras.";
+    }
+  }
+
   private async Task HandleReturnLoan(int loanId)
   {
     message = null;
@@ -183,6 +311,10 @@ else
       await LoanService.ReturnAsync(loanId);
 
       message = "Boken har återlämnats!";
+
+      if (isEditingLoan && editLoan.Id == loanId)
+        CancelEditLoan();
+
       await LoadPageData();
     }
     catch (InvalidOperationException ex)
@@ -192,6 +324,27 @@ else
     catch (Exception)
     {
       errorMessage = "Ett oväntat fel uppstod när lånet skulle returneras.";
+    }
+  }
+
+  private async Task HandleDeleteLoan(int loanId)
+  {
+    message = null;
+    errorMessage = null;
+
+    try
+    {
+      await LoanService.DeleteAsync(loanId);
+      message = "Lånet togs bort.";
+      await LoadPageData();
+    }
+    catch (InvalidOperationException ex)
+    {
+      errorMessage = ex.Message;
+    }
+    catch (Exception)
+    {
+      errorMessage = "Ett oväntat fel uppstod när lånet skulle tas bort.";
     }
   }
 }

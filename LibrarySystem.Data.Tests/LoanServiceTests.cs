@@ -162,4 +162,79 @@ public class LoanServiceTests
         () => service.ReturnAsync(9999));
   }
 
+  [Fact]
+  public async Task UpdateDueDateAsync_ShouldUpdateDueDate_WhenLoanIsActive()
+  {
+    // Arrange
+    using var context = TestDb.CreateContext(nameof(UpdateDueDateAsync_ShouldUpdateDueDate_WhenLoanIsActive));
+
+    var book = new Book("111", "Book", "Author", 2020);
+    var member = new Member("M1", "John Doe", "john.doe@example.com");
+
+    context.Books.Add(book);
+    context.Members.Add(member);
+    await context.SaveChangesAsync();
+
+    var service = new LoanService(context);
+    await service.BorrowAsync(book.Id, member.Id);
+
+    var loan = await context.Loans.FirstAsync();
+    var newDueDate = loan.LoanDate.AddDays(30);
+
+    // Act
+    await service.UpdateDueDateAsync(loan.Id, newDueDate);
+
+    // Assert
+    var savedLoan = await context.Loans.FirstAsync(l => l.Id == loan.Id);
+    Assert.Equal(newDueDate.Date, savedLoan.DueDate.Date);
+  }
+
+  [Fact]
+  public async Task DeleteAsync_ShouldRemoveReturnedLoan()
+  {
+    // Arrange
+    using var context = TestDb.CreateContext(nameof(DeleteAsync_ShouldRemoveReturnedLoan));
+
+    var book = new Book("111", "Book", "Author", 2020);
+    var member = new Member("M1", "John Doe", "john.doe@example.com");
+
+    context.Books.Add(book);
+    context.Members.Add(member);
+    await context.SaveChangesAsync();
+
+    var service = new LoanService(context);
+    await service.BorrowAsync(book.Id, member.Id);
+
+    var loan = await context.Loans.FirstAsync();
+    await service.ReturnAsync(loan.Id);
+
+    // Act
+    await service.DeleteAsync(loan.Id);
+
+    // Assert
+    Assert.False(await context.Loans.AnyAsync(l => l.Id == loan.Id));
+  }
+
+  [Fact]
+  public async Task DeleteAsync_ShouldThrow_WhenLoanIsActive()
+  {
+    // Arrange
+    using var context = TestDb.CreateContext(nameof(DeleteAsync_ShouldThrow_WhenLoanIsActive));
+
+    var book = new Book("111", "Book", "Author", 2020);
+    var member = new Member("M1", "John Doe", "john.doe@example.com");
+
+    context.Books.Add(book);
+    context.Members.Add(member);
+    await context.SaveChangesAsync();
+
+    var service = new LoanService(context);
+    await service.BorrowAsync(book.Id, member.Id);
+
+    var loan = await context.Loans.FirstAsync();
+
+    // Act & Assert
+    await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteAsync(loan.Id));
+  }
+
 }

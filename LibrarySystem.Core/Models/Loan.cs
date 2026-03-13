@@ -33,4 +33,9 @@ public class Loan
   {
     ReturnDate = returnDate;
   }
+
+  public void UpdateDueDate(DateTime dueDate)
+  {
+    DueDate = dueDate;
+  }
 }

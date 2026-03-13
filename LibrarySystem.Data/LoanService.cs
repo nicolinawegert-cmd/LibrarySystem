@@ -53,4 +53,35 @@ public class LoanService
 
     await _context.SaveChangesAsync();
   }
+
+  public async Task UpdateDueDateAsync(int loanId, DateTime dueDate)
+  {
+    var loan = await _context.Loans.FirstOrDefaultAsync(l => l.Id == loanId);
+
+    if (loan is null)
+      throw new InvalidOperationException($"Loan with id {loanId} not found.");
+
+    if (loan.ReturnDate is not null)
+      throw new InvalidOperationException("Returned loans cannot be updated.");
+
+    if (dueDate.Date < loan.LoanDate.Date)
+      throw new InvalidOperationException("Due date cannot be earlier than the loan date.");
+
+    loan.UpdateDueDate(dueDate);
+    await _context.SaveChangesAsync();
+  }
+
+  public async Task DeleteAsync(int loanId)
+  {
+    var loan = await _context.Loans.FirstOrDefaultAsync(l => l.Id == loanId);
+
+    if (loan is null)
+      throw new InvalidOperationException($"Loan with id {loanId} not found.");
+
+    if (loan.ReturnDate is null)
+      throw new InvalidOperationException("Active loans cannot be deleted.");
+
+    _context.Loans.Remove(loan);
+    await _context.SaveChangesAsync();
+  }
 }
