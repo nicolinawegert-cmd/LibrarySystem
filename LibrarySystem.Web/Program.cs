@@ -5,13 +5,15 @@ using LibrarySystem.Data.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var sharedDatabasePath = Path.GetFullPath(
+    Path.Combine(builder.Environment.ContentRootPath, "..", "LibrarySystem.App", "library.db"));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Add services to the container.
 builder.Services.AddDbContext<LibraryContext>(options =>
-    options.UseSqlite("Data Source=library.db"));
+    options.UseSqlite($"Data Source={sharedDatabasePath}"));
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<LoanService>();
