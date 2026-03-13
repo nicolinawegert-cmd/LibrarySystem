@@ -1,5 +1,10 @@
 @page "/books/{id:int}"
+@using LibrarySystem.Data.Services
 @inject IBookRepository BookRepository
+@inject LibraryContext Context
+@inject LoanService LoanService
+@inject NavigationManager NavigationManager
+
 
 <PageTitle>Bokdetaljer</PageTitle>
 
@@ -36,15 +41,74 @@ else
   </table>
 }
 
+@if (book is not null && book.IsAvailable)
+{
+  <h2>Låna bok</h2>
+
+  <div class="mb-3">
+    <label for="member" class="form-label">Välj medlem</label>
+    <select id="member" class="form-select" @bind="selectedMemberId">
+      <option value="0">Välj en medlem</option>
+      @foreach (var member in members)
+      {
+        <option value="@member.Id">@member.Name</option>
+      }
+    </select>
+  </div>
+  <button class="btn btn-primary" @onclick="HandleBorrow">Låna Bok</button>
+}
+else if (book is not null)
+{
+  <p><strong>Boken är redan utlånad</strong></p>
+}
+
+@if (!string.IsNullOrWhiteSpace(message))
+{
+  <p class="text-success">@message</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+  <p class="text-danger">@errorMessage</p>
+}
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private Book? book;
+    private List<Member> members = new();
+    private int selectedMemberId;
+    private string? message;
+    private string? errorMessage;
     
     protected override async Task OnParametersSetAsync()
     {
         book = await BookRepository.GetByIdAsync(Id);
+        members = await Context.Members.OrderBy(m => m.Name).ToListAsync();
+    }
+    private async Task HandleBorrow()
+    {
+      errorMessage = null;
+      message = null;
+
+      if (selectedMemberId == 0)
+      {
+        errorMessage = "Vänligen välj en medlem.";
+        return;
+      }
+
+      try
+      {
+        await LoanService.BorrowAsync(Id, selectedMemberId);
+        message = "Boken har lånats ut!";
+        book = await BookRepository.GetByIdAsync(Id); // Uppdatera bokinformationen
+      }
+      catch (InvalidOperationException ex)
+      {
+        errorMessage = ex.Message;
+      }
     }
 }
 
