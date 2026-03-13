@@ -200,6 +200,23 @@ public class BookRepositoryTests
     }
 
     [Fact]
+    public async Task SearchAsync_ShouldBeCaseInsensitive()
+    {
+        // Arrange
+        using var context = TestDb.CreateContext(nameof(SearchAsync_ShouldBeCaseInsensitive));
+        var repository = TestDb.CreateBookRepository(context);
+
+        await repository.AddAsync(new Book(isbn: "111", title: "Sagan om ringen", author: "J.R.R. Tolkien", publishedYear: 1954));
+
+        // Act
+        var results = (await repository.SearchAsync("TOLKIEN")).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("111", results[0].ISBN);
+    }
+
+    [Fact]
     public async Task SearchAsync_ShouldReturnAllBooks_WhenSearchTermIsEmpty()
     {
         // Arrange

@@ -49,7 +49,7 @@ public class BookRepository : IBookRepository
     if (string.IsNullOrWhiteSpace(searchTerm))
       return await _context.Books.ToListAsync();
 
-    var term = searchTerm.Trim();
+    var term = searchTerm.Trim().ToLower();
 
     return await _context.Books
       .Where(b =>
