@@ -38,7 +38,10 @@ public class BookRepository : IBookRepository
 
   public async Task<Book?> GetByIdAsync(int id)
   {
-    return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+    return await _context.Books
+    .Include(b => b.Loans)
+    .ThenInclude(l => l.Member)
+    .FirstOrDefaultAsync(b => b.Id == id);
   }
 
   public async Task<IEnumerable<Book>> SearchAsync(string searchTerm)

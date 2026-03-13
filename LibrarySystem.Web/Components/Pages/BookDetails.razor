@@ -5,6 +5,37 @@
 
 <h1>Bokdetaljer</h1>
 
+<h2>Lånehistorik</h2>
+
+@if (book?.Loans is null || !book.Loans.Any())
+{
+  <p>Det finns ingen lånehistorik för den här boken.</p>
+}
+else 
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Medlem</th>
+        <th>Lånedatum</th>
+        <th>Förfallodatum</th>
+        <th>Returnerad</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var loan in book.Loans.OrderByDescending(l => l.LoanDate))
+      {
+        <tr>
+          <td>@loan.Member?.Name</td>
+          <td>@loan.LoanDate.ToShortDateString()</td>
+          <td>@(loan.DueDate.ToShortDateString())</td>
+          <td>@(loan.ReturnDate?.ToShortDateString() ?? "Inte returnerad")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
 @code {
     [Parameter]
     public int Id { get; set; }
