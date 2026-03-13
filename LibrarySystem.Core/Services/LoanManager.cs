@@ -20,7 +20,7 @@ public class LoanManager
       throw new InvalidOperationException("Book is not available for borrowing.");
 
     book.MarkAsBorrowed();
-    member.AddBorrowedBook(book);
+    member.Loans.Add(new Loan(book, member, loanDate, dueDate));
 
     var loan = new Loan(book, member, loanDate, dueDate);
     _loans.Add(loan);

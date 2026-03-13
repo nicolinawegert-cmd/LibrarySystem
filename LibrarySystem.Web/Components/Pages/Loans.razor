@@ -105,7 +105,7 @@ else
     activeloans = await Context.Loans
       .Include(l => l.Book)
       .Include(l => l.Member)
-      .Where(l => !l.IsReturned)
+      .Where(l => l.ReturnDate == null)
       .OrderBy(l => l.DueDate)
       .ToListAsync();
   }

@@ -8,8 +8,13 @@ public class LibraryContextFactory : IDesignTimeDbContextFactory<LibraryContext>
   public LibraryContext CreateDbContext(string[] args)
   {
     var optionsBuilder = new DbContextOptionsBuilder<LibraryContext>();
-    optionsBuilder.UseSqlite("Data Source=library.db");
+
+    var databasePath = Path.GetFullPath(
+        Path.Combine(Directory.GetCurrentDirectory(), "..", "LibrarySystem.App", "library.db"));
+
+    optionsBuilder.UseSqlite($"Data Source={databasePath}");
 
     return new LibraryContext(optionsBuilder.Options);
   }
+
 }

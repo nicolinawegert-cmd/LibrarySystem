@@ -7,9 +7,9 @@ public class Member
 {
   public int Id { get; set; }
 
-  public string MemberId { get; } = string.Empty;
-  public string Name { get; } = string.Empty;
-  public string Email { get; } = string.Empty;
+  public string MemberId { get; private set; } = string.Empty;
+  public string Name { get; private set; } = string.Empty;
+  public string Email { get; private set; } = string.Empty;
 
   public DateTime MemberSince { get; private set; }
 
@@ -25,13 +25,8 @@ public class Member
     MemberSince = DateTime.UtcNow;
   }
 
-  private readonly List<Book> _borrowedBooks = new();
-  public IReadOnlyList<Book> BorrowedBooks => _borrowedBooks;
-  public void AddBorrowedBook(Book book) => _borrowedBooks.Add(book);
-  public void RemoveBorrowedBook(Book book) => _borrowedBooks.Remove(book);
-
   public string GetInfo()
   {
-    return $"{Name} ({MemberId}) - {Email} | Medlem sedan: {MemberSince:yyyy-MM-dd} | Lån: {BorrowedBooks.Count}";
+    return $"{Name} ({MemberId}) - {Email} | Medlem sedan: {MemberSince:yyyy-MM-dd} | Lån: {Loans.Count}";
   }
 }
