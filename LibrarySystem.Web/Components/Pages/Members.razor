@@ -1,5 +1,5 @@
 @page "/members"
-@inject LibraryContext Db
+@inject IMemberRepository MemberRepository
 
 <PageTitle>Medlemmar</PageTitle>
 
@@ -77,10 +77,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    members = await Db.Members
-      .Include(m => m.Loans)
-      .OrderBy(m => m.Name)
-      .ToListAsync();
+    members = (await MemberRepository.GetAllAsync()).ToList();
   }
 
   private async Task HandleAddMember()
@@ -92,16 +89,12 @@
     {
       var member = new Member(newMember.MemberId!, newMember.Name!, newMember.Email);
 
-      Db.Members.Add(member);
-      await Db.SaveChangesAsync();
+      await MemberRepository.AddAsync(member);
 
       addMemberMessage = "Medlem registrerades.";
       newMember = new AddMemberFormModel(); 
 
-      members = await Db.Members
-        .Include(m => m.Loans)
-        .OrderBy(m => m.Name)
-        .ToListAsync();
+      members = (await MemberRepository.GetAllAsync()).ToList();
     }
     catch (InvalidOperationException ex)
     {

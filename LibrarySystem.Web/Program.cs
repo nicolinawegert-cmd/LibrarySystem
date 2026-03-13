@@ -16,6 +16,7 @@ builder.Services.AddDbContext<LibraryContext>(options =>
     options.UseSqlite($"Data Source={sharedDatabasePath}"));
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<LoanService>();
 
 var app = builder.Build();
