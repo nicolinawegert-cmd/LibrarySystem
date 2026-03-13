@@ -56,6 +56,7 @@ else
         <th>Lånedatum</th>
         <th>Förfallodatum</th>
         <th>Status</th>
+        <th>Åtgärd</th>
       </tr>
     </thead>
     <tbody>
@@ -69,6 +70,11 @@ else
           <td>@loan.LoanDate.ToShortDateString()</td>
           <td>@loan.DueDate.ToShortDateString()</td>
           <td>@(isOverdue ? "Försenad" : "Aktiv")</td>
+          <td>
+            <button class="btn btn-sm btn-outline-success" @onclick="() => HandleReturnLoan(loan.Id)">
+              Retunera
+            </button>
+          </td>
         </tr>
       }
     </tbody>
@@ -129,6 +135,23 @@ else
       selectedBookId = 0;
       selectedMemberId = 0;
 
+      await LoadPageData();
+    }
+    catch (InvalidOperationException ex)
+    {
+      errorMessage = ex.Message;
+    }
+  }
+  private async Task HandleReturnLoan(int loanId)
+  {
+    message = null;
+    errorMessage = null;
+
+    try
+    {
+      await LoanService.ReturnAsync(loanId);
+
+      message = "Boken har återlämnats!";
       await LoadPageData();
     }
     catch (InvalidOperationException ex)

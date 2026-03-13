@@ -35,4 +35,22 @@ public class LoanService
     _context.Loans.Add(loan);
     await _context.SaveChangesAsync();
   }
+
+  public async Task ReturnAsync(int loanId)
+  {
+    var loan = await _context.Loans
+      .Include(l => l.Book)
+      .FirstOrDefaultAsync(l => l.Id == loanId);
+
+    if (loan is null)
+      throw new InvalidOperationException($"Loan with id {loanId} not found.");
+
+    if (loan.ReturnDate is not null)
+      throw new InvalidOperationException($"Loan is already returned.");
+
+    loan.MarkReturned(DateTime.UtcNow);
+    loan.Book.MarkAsReturned();
+
+    await _context.SaveChangesAsync();
+  }
 }
