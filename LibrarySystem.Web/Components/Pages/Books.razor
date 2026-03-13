@@ -3,50 +3,68 @@
 
 <PageTitle>Böcker</PageTitle>
 
-<h1>Böcker</h1>
-
-<p>Sortering: @currentSortColumn (@(sortAscending ? "Stigande" : "Fallande"))</p>
-
-<div class="mb-3">
-  <label for="searchTerm" class="form-label">Sök bok</label>
-  <InputText id="searchTerm" class="form-control" @bind-Value="searchTerm" />
+<div class="page-heading">
+  <h1>Böcker</h1>
+  <p>Hantera katalogen, sök fram titlar och uppdatera bibliotekets bestånd.</p>
 </div>
 
-<button class="btn btn-primary mb-2" @onclick="HandleSearch">Sök</button>
-<button class="btn btn-secondary mb-2 ms-2" @onclick="LoadAllBooks">Visa alla</button>
+<section class="content-panel mb-4">
+  <h2 class="section-title">Sök och sortera</h2>
+  <p class="section-subtitle">Nuvarande sortering: @currentSortColumn (@(sortAscending ? "Stigande" : "Fallande"))</p>
 
-<h2>Lägg till ny bok</h2>
-
-<EditForm Model="@newBook" OnValidSubmit="HandleAddBook" FormName="AddBookForm">
-  <DataAnnotationsValidator />
-  <ValidationSummary />
-
-  <div class="mb-3">
-    <label class="form-label">ISBN</label>
-    <InputText class="form-control" @bind-Value="newBook.ISBN" />
-    <ValidationMessage For="@(() => newBook.ISBN)" />
+  <div class="row g-3 align-items-end">
+    <div class="col-md-8">
+      <label for="searchTerm" class="form-label">Sök bok</label>
+      <InputText id="searchTerm" class="form-control" @bind-Value="searchTerm" />
+    </div>
+    <div class="col-md-4">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-primary" @onclick="HandleSearch">Sök</button>
+        <button class="btn btn-secondary" @onclick="LoadAllBooks">Visa alla</button>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="mb-3">
-    <label class="form-label">Titel</label>
-    <InputText class="form-control" @bind-Value="newBook.Title" />
-    <ValidationMessage For="@(() => newBook.Title)" />
-  </div>
+<section class="form-shell mb-4">
+  <h2 class="section-title">Lägg till ny bok</h2>
+  <p class="section-subtitle">Registrera en ny bok som direkt blir synlig i katalogen.</p>
 
-  <div class="mb-3">
-    <label class="form-label">Författare</label>
-    <InputText class="form-control" @bind-Value="newBook.Author" />
-    <ValidationMessage For="@(() => newBook.Author)" />
-  </div>
+  <EditForm Model="@newBook" OnValidSubmit="HandleAddBook" FormName="AddBookForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-  <div class="mb-3">
-    <label class="form-label">Utgivningsår</label>
-    <InputNumber class="form-control" @bind-Value="newBook.PublishedYear" />
-    <ValidationMessage For="@(() => newBook.PublishedYear)" />
-  </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">ISBN</label>
+        <InputText class="form-control" @bind-Value="newBook.ISBN" />
+        <ValidationMessage For="@(() => newBook.ISBN)" />
+      </div>
 
-  <button type="submit" class="btn btn-success">Spara bok</button>
-</EditForm>
+      <div class="col-md-6">
+        <label class="form-label">Titel</label>
+        <InputText class="form-control" @bind-Value="newBook.Title" />
+        <ValidationMessage For="@(() => newBook.Title)" />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Författare</label>
+        <InputText class="form-control" @bind-Value="newBook.Author" />
+        <ValidationMessage For="@(() => newBook.Author)" />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Utgivningsår</label>
+        <InputNumber class="form-control" @bind-Value="newBook.PublishedYear" />
+        <ValidationMessage For="@(() => newBook.PublishedYear)" />
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success">Spara bok</button>
+    </div>
+  </EditForm>
+</section>
 
 @if (!string.IsNullOrWhiteSpace(addBookMessage))
 {
@@ -73,64 +91,75 @@ else if (!books.Any())
 }
 else
 {
-  <h2>Kortvy</h2>
-
-  @foreach (var book in books)
-  {
-    <BookCard Book="book" />
-  }
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>
-          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.ISBN))">
-            ISBN
-          </button>
-        </th>
-        <th>
-          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Title))">
-            Titel
-          </button>
-        </th>
-        <th>
-          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Author))">
-            Författare
-          </button>
-        </th>
-        <th>
-          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.PublishedYear))">
-            År
-          </button>
-        </th>
-        <th>
-          <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.IsAvailable))">
-            Status
-          </button>
-        </th>
-        <th>Åtgärd</th>
-      </tr>
-    </thead>
-    <tbody>
+  <section class="mb-4">
+    <h2 class="section-title">Kortvy</h2>
+    <div class="row g-3">
       @foreach (var book in books)
       {
-        <tr>
-          <td>@book.ISBN</td>
-          <td>
-            <a href="/books/@book.Id">@book.Title</a>
-          </td>
-          <td>@book.Author</td>
-          <td>@book.PublishedYear</td>
-          <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
-          <td>
-            <button class="btn btn-sm btn-outline-danger" @onclick="() => HandleDeleteBook(book.Id)">
-              Ta bort
-            </button>
-          </td>
-        </tr>
+        <div class="col-md-6 col-xl-4">
+          <BookCard Book="book" />
+        </div>
       }
-    </tbody>
-  </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Tabellvy</h2>
+
+    <div class="table-shell">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.ISBN))">
+                ISBN
+              </button>
+            </th>
+            <th>
+              <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Title))">
+                Titel
+              </button>
+            </th>
+            <th>
+              <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.Author))">
+                Författare
+              </button>
+            </th>
+            <th>
+              <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.PublishedYear))">
+                År
+              </button>
+            </th>
+            <th>
+              <button class="btn btn-link p-0" @onclick="() => SortBooks(nameof(Book.IsAvailable))">
+                Status
+              </button>
+            </th>
+            <th>Åtgärd</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var book in books)
+          {
+            <tr>
+              <td>@book.ISBN</td>
+              <td>
+                <a href="/books/@book.Id">@book.Title</a>
+              </td>
+              <td>@book.Author</td>
+              <td>@book.PublishedYear</td>
+              <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger" @onclick="() => HandleDeleteBook(book.Id)">
+                  Ta bort
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
 }
 
 
