@@ -192,6 +192,28 @@ Testerna täcker bland annat:
 - xUnit
 - bUnit
 
+## Screenshots
+
+### Startsida
+
+![Startsida](Screenshots/home.png)
+
+### Boklista
+
+![Boklista](Screenshots/books.png)
+
+### Bokdetaljer
+
+![Bokdetaljer](Screenshots/book-details.png)
+
+### Medlemmar
+
+![Medlemmar](Screenshots/members.png)
+
+### Utlåning
+
+![Utlåning](Screenshots/loans.png)
+
 ## Kommentar
 
 Huvudfokus i Del 2 är integrationen mellan Entity Framework Core, datalagret och Blazor-gränssnittet. Konsolprojektet från Del 1 finns kvar som separat körbar del i lösningen.
