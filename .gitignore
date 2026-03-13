@@ -68,3 +68,14 @@ appsettings.Local.json
 
 coverage/
 coverage.*
+
+############################################
+# Database
+############################################
+
+LibrarySystem.App/*.db-wal
+LibrarySystem.App/*.db-shm
+LibrarySystem.App/*.db
+LibrarySystem.Web/*.db
+LibrarySystem.Web/*.db-wal
+LibrarySystem.Web/*.db-shm
