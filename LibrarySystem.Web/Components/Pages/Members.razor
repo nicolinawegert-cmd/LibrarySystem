@@ -42,69 +42,56 @@
   </EditForm>
 </section>
 
-@if (!string.IsNullOrWhiteSpace(addMemberMessage))
+@if (isEditingMember)
+{
+  <section class="form-shell mb-4">
+    <h2 class="section-title">Redigera medlem</h2>
+    <p class="section-subtitle">Uppdatera uppgifterna för vald medlem.</p>
+
+    <EditForm Model="@editMember" OnValidSubmit="HandleUpdateMember" FormName="EditMemberForm">
+      <DataAnnotationsValidator />
+      <ValidationSummary />
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Medlemsnummer</label>
+          <InputText class="form-control" @bind-Value="editMember.MemberId" />
+          <ValidationMessage For="@(() => editMember.MemberId)" />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Namn</label>
+          <InputText class="form-control" @bind-Value="editMember.Name" />
+          <ValidationMessage For="@(() => editMember.Name)" />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">E-post</label>
+          <InputText class="form-control" @bind-Value="editMember.Email" />
+          <ValidationMessage For="@(() => editMember.Email)" />
+        </div>
+      </div>
+
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Uppdatera medlem</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="CancelEditMember">Avbryt</button>
+      </div>
+    </EditForm>
+  </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(memberMessage))
 {
   <div class="alert alert-success" role="alert">
-    @addMemberMessage
+    @memberMessage
   </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(addMemberError))
+@if (!string.IsNullOrWhiteSpace(memberError))
 {
   <div class="alert alert-danger" role="alert">
-    @addMemberError
+    @memberError
   </div>
-}
-
-@code {
-  private List<Member>? members;
-  private AddMemberFormModel newMember = new(); 
-  private string? addMemberMessage;
-  private string? addMemberError;
-
-  private class AddMemberFormModel
-  {
-    [Required(ErrorMessage = "Medlemsnummer är obligatoriskt.")]
-    public string? MemberId { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Namn är obligatoriskt.")]
-    public string? Name { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "E-post är obligatorisk.")]
-    [EmailAddress(ErrorMessage = "Ogiltig e-postadress")]
-    public string Email { get; set; } = string.Empty;
-  }
-
-  protected override async Task OnInitializedAsync()
-  {
-    members = (await MemberRepository.GetAllAsync()).ToList();
-  }
-
-  private async Task HandleAddMember()
-  {
-    addMemberMessage = null;
-    addMemberError = null;
-
-    try
-    {
-      var member = new Member(newMember.MemberId!, newMember.Name!, newMember.Email);
-
-      await MemberRepository.AddAsync(member);
-
-      addMemberMessage = "Medlem registrerades.";
-      newMember = new AddMemberFormModel(); 
-
-      members = (await MemberRepository.GetAllAsync()).ToList();
-    }
-    catch (InvalidOperationException ex)
-    {
-      addMemberError = ex.Message;
-    }
-    catch (Exception)
-    {
-      addMemberError = "Ett oväntat fel uppstod när medlemmen skulle sparas.";
-    }
-  }
 }
 
 @if (members == null)
@@ -128,6 +115,7 @@ else
             <th>Namn</th>
             <th>E-post</th>
             <th>Aktiva lån</th>
+            <th>Åtgärd</th>
           </tr>
         </thead>
         <tbody>
@@ -140,10 +128,167 @@ else
               </td>
               <td>@member.Email</td>
               <td>@member.Loans.Count(l => !l.IsReturned)</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-2" @onclick="() => StartEditMember(member)">
+                  Redigera
+                </button>
+                <button class="btn btn-sm btn-outline-danger" @onclick="() => HandleDeleteMember(member.Id)">
+                  Ta bort
+                </button>
+              </td>
             </tr>
           }
         </tbody>
       </table>
     </div>
   </section>
+}
+
+@code {
+  private List<Member>? members;
+  private AddMemberFormModel newMember = new();
+  private EditMemberFormModel editMember = new();
+  private bool isEditingMember;
+  private string? memberMessage;
+  private string? memberError;
+
+  private class AddMemberFormModel
+  {
+    [Required(ErrorMessage = "Medlemsnummer är obligatoriskt.")]
+    public string MemberId { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Namn är obligatoriskt.")]
+    public string Name { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "E-post är obligatorisk.")]
+    [EmailAddress(ErrorMessage = "Ogiltig e-postadress")]
+    public string Email { get; set; } = string.Empty;
+  }
+
+  private class EditMemberFormModel
+  {
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Medlemsnummer är obligatoriskt.")]
+    public string MemberId { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Namn är obligatoriskt.")]
+    public string Name { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "E-post är obligatorisk.")]
+    [EmailAddress(ErrorMessage = "Ogiltig e-postadress")]
+    public string Email { get; set; } = string.Empty;
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await LoadMembers();
+  }
+
+  private async Task LoadMembers()
+  {
+    members = (await MemberRepository.GetAllAsync()).ToList();
+  }
+
+  private async Task HandleAddMember()
+  {
+    memberMessage = null;
+    memberError = null;
+
+    try
+    {
+      var member = new Member(newMember.MemberId, newMember.Name, newMember.Email);
+
+      await MemberRepository.AddAsync(member);
+
+      memberMessage = "Medlem registrerades.";
+      newMember = new AddMemberFormModel();
+      await LoadMembers();
+    }
+    catch (InvalidOperationException ex)
+    {
+      memberError = ex.Message;
+    }
+    catch (Exception)
+    {
+      memberError = "Ett oväntat fel uppstod när medlemmen skulle sparas.";
+    }
+  }
+
+  private void StartEditMember(Member member)
+  {
+    isEditingMember = true;
+    memberMessage = null;
+    memberError = null;
+    editMember = new EditMemberFormModel
+    {
+      Id = member.Id,
+      MemberId = member.MemberId,
+      Name = member.Name,
+      Email = member.Email
+    };
+  }
+
+  private void CancelEditMember()
+  {
+    isEditingMember = false;
+    editMember = new EditMemberFormModel();
+    memberMessage = null;
+    memberError = null;
+  }
+
+  private async Task HandleUpdateMember()
+  {
+    memberMessage = null;
+    memberError = null;
+
+    try
+    {
+      var member = await MemberRepository.GetByIdAsync(editMember.Id);
+      if (member is null)
+        throw new InvalidOperationException("Medlemmen kunde inte hittas.");
+
+      member.UpdateDetails(editMember.MemberId, editMember.Name, editMember.Email);
+
+      await MemberRepository.UpdateAsync(member);
+
+      memberMessage = "Medlemmen uppdaterades.";
+      isEditingMember = false;
+      editMember = new EditMemberFormModel();
+      await LoadMembers();
+    }
+    catch (InvalidOperationException ex)
+    {
+      memberError = ex.Message;
+    }
+    catch (Exception)
+    {
+      memberError = "Ett oväntat fel uppstod när medlemmen skulle uppdateras.";
+    }
+  }
+
+  private async Task HandleDeleteMember(int id)
+  {
+    memberMessage = null;
+    memberError = null;
+
+    try
+    {
+      await MemberRepository.DeleteAsync(id);
+      memberMessage = "Medlemmen togs bort.";
+
+      if (isEditingMember && editMember.Id == id)
+        CancelEditMember();
+
+      await LoadMembers();
+    }
+    catch (InvalidOperationException ex)
+    {
+      memberError = ex.Message;
+    }
+    catch (Exception)
+    {
+      memberError = "Ett oväntat fel uppstod när medlemmen skulle tas bort.";
+    }
+  }
 }

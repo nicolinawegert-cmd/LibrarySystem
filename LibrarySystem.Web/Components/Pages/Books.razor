@@ -66,20 +66,63 @@
   </EditForm>
 </section>
 
-@if (!string.IsNullOrWhiteSpace(addBookMessage))
+@if (isEditingBook)
+{
+  <section class="form-shell mb-4">
+    <h2 class="section-title">Redigera bok</h2>
+    <p class="section-subtitle">Uppdatera uppgifterna för vald bok.</p>
+
+    <EditForm Model="@editBook" OnValidSubmit="HandleUpdateBook" FormName="EditBookForm">
+      <DataAnnotationsValidator />
+      <ValidationSummary />
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">ISBN</label>
+          <InputText class="form-control" @bind-Value="editBook.ISBN" />
+          <ValidationMessage For="@(() => editBook.ISBN)" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Titel</label>
+          <InputText class="form-control" @bind-Value="editBook.Title" />
+          <ValidationMessage For="@(() => editBook.Title)" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Författare</label>
+          <InputText class="form-control" @bind-Value="editBook.Author" />
+          <ValidationMessage For="@(() => editBook.Author)" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Utgivningsår</label>
+          <InputNumber class="form-control" @bind-Value="editBook.PublishedYear" />
+          <ValidationMessage For="@(() => editBook.PublishedYear)" />
+        </div>
+      </div>
+
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Uppdatera bok</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="CancelEditBook">Avbryt</button>
+      </div>
+    </EditForm>
+  </section>
+}
+
+@if (!string.IsNullOrWhiteSpace(bookMessage))
 {
   <div class="alert alert-success" role="alert">
-    @addBookMessage
+    @bookMessage
   </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(addBookError))
+@if (!string.IsNullOrWhiteSpace(bookError))
 {
   <div class="alert alert-danger" role="alert">
-    @addBookError
+    @bookError
   </div>
 }
-
 
 @if (books is null)
 {
@@ -150,6 +193,9 @@ else
               <td>@book.PublishedYear</td>
               <td>@(book.IsAvailable ? "Tillgänglig" : "Utlånad")</td>
               <td>
+                <button class="btn btn-sm btn-outline-primary me-2" @onclick="() => StartEditBook(book)">
+                  Redigera
+                </button>
                 <button class="btn btn-sm btn-outline-danger" @onclick="() => HandleDeleteBook(book.Id)">
                   Ta bort
                 </button>
@@ -162,15 +208,16 @@ else
   </section>
 }
 
-
 @code {
   private List<Book>? books;
   private string searchTerm = string.Empty;
   private string currentSortColumn = nameof(Book.Title);
   private bool sortAscending = true;
   private AddBookFormModel newBook = new();
-  private string? addBookMessage;
-  private string? addBookError;
+  private EditBookFormModel editBook = new();
+  private bool isEditingBook;
+  private string? bookMessage;
+  private string? bookError;
 
   private class AddBookFormModel
   {
@@ -185,8 +232,25 @@ else
 
     [Range(1000, 2100, ErrorMessage = "Ange ett giltigt utgivningsår.")]
     public int PublishedYear { get; set; }
-
   }
+
+  private class EditBookFormModel
+  {
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "ISBN är obligatoriskt.")]
+    public string ISBN { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Titel är obligatorisk.")]
+    public string Title { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Författare är obligatorisk.")]
+    public string Author { get; set; } = string.Empty;
+
+    [Range(1000, 2100, ErrorMessage = "Ange ett giltigt utgivningsår.")]
+    public int PublishedYear { get; set; }
+  }
+
   protected override async Task OnInitializedAsync()
   {
     await LoadAllBooks();
@@ -246,8 +310,8 @@ else
 
   private async Task HandleAddBook()
   {
-    addBookError = null;
-    addBookMessage = null;
+    bookError = null;
+    bookMessage = null;
 
     try
     {
@@ -259,39 +323,95 @@ else
 
       await BookRepository.AddAsync(book);
 
-      addBookMessage = "Boken sparades.";
+      bookMessage = "Boken sparades.";
       newBook = new AddBookFormModel();
       await LoadAllBooks();
     }
     catch (InvalidOperationException ex)
     {
-      addBookError = ex.Message;
+      bookError = ex.Message;
     }
     catch (Exception)
     {
-      addBookError = "Ett oväntat fel uppstod när boken skulle sparas.";
+      bookError = "Ett oväntat fel uppstod när boken skulle sparas.";
     }
-
   }
 
-  private async Task HandleDeleteBook(int id)
+  private void StartEditBook(Book book)
   {
-    addBookError = null;
-    addBookMessage = null;
+    isEditingBook = true;
+    bookMessage = null;
+    bookError = null;
+    editBook = new EditBookFormModel
+    {
+      Id = book.Id,
+      ISBN = book.ISBN,
+      Title = book.Title,
+      Author = book.Author,
+      PublishedYear = book.PublishedYear
+    };
+  }
+
+  private void CancelEditBook()
+  {
+    isEditingBook = false;
+    editBook = new EditBookFormModel();
+    bookMessage = null;
+    bookError = null;
+  }
+
+  private async Task HandleUpdateBook()
+  {
+    bookError = null;
+    bookMessage = null;
 
     try
     {
-      await BookRepository.DeleteAsync(id);
-      addBookMessage = "Boken togs bort.";
+      var book = await BookRepository.GetByIdAsync(editBook.Id);
+      if (book is null)
+        throw new InvalidOperationException("Boken kunde inte hittas.");
+
+      book.UpdateDetails(editBook.ISBN, editBook.Title, editBook.Author, editBook.PublishedYear);
+
+      await BookRepository.UpdateAsync(book);
+
+      bookMessage = "Boken uppdaterades.";
+      isEditingBook = false;
+      editBook = new EditBookFormModel();
       await LoadAllBooks();
     }
     catch (InvalidOperationException ex)
     {
-      addBookError = ex.Message;
+      bookError = ex.Message;
     }
     catch (Exception)
     {
-      addBookError = "Ett oväntat fel uppstod när boken skulle tas bort.";
+      bookError = "Ett oväntat fel uppstod när boken skulle uppdateras.";
+    }
+  }
+
+  private async Task HandleDeleteBook(int id)
+  {
+    bookError = null;
+    bookMessage = null;
+
+    try
+    {
+      await BookRepository.DeleteAsync(id);
+      bookMessage = "Boken togs bort.";
+
+      if (isEditingBook && editBook.Id == id)
+        CancelEditBook();
+
+      await LoadAllBooks();
+    }
+    catch (InvalidOperationException ex)
+    {
+      bookError = ex.Message;
+    }
+    catch (Exception)
+    {
+      bookError = "Ett oväntat fel uppstod när boken skulle tas bort.";
     }
   }
 }
