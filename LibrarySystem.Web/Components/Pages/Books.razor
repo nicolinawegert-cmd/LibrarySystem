@@ -24,21 +24,25 @@
   <div class="mb-3">
     <label class="form-label">ISBN</label>
     <InputText class="form-control" @bind-Value="newBook.ISBN" />
+    <ValidationMessage For="@(() => newBook.ISBN)" />
   </div>
 
   <div class="mb-3">
     <label class="form-label">Titel</label>
     <InputText class="form-control" @bind-Value="newBook.Title" />
+    <ValidationMessage For="@(() => newBook.Title)" />
   </div>
 
   <div class="mb-3">
     <label class="form-label">Författare</label>
     <InputText class="form-control" @bind-Value="newBook.Author" />
+    <ValidationMessage For="@(() => newBook.Author)" />
   </div>
 
   <div class="mb-3">
     <label class="form-label">Utgivningsår</label>
     <InputNumber class="form-control" @bind-Value="newBook.PublishedYear" />
+    <ValidationMessage For="@(() => newBook.PublishedYear)" />
   </div>
 
   <button type="submit" class="btn btn-success">Spara bok</button>
@@ -122,13 +126,19 @@ else
 
   private class AddBookFormModel
   {
+    [Required(ErrorMessage = "ISBN är obligatoriskt.")]
     public string ISBN { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Titel är obligatoriskt.")]
     public string Title { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Författare är obligatoriskt.")]
     public string Author { get; set; } = string.Empty;
+
+    [Range(1000, 2100, ErrorMessage = "Ange ett giltigt utgivningsår.")]
     public int PublishedYear { get; set; }
 
   }
-
   protected override async Task OnInitializedAsync()
   {
     await LoadAllBooks();
