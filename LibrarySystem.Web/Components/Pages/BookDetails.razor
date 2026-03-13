@@ -8,109 +8,6 @@
 
 <PageTitle>Bokdetaljer</PageTitle>
 
-<h1>Bokdetaljer</h1>
-
-<h2>Lånehistorik</h2>
-
-@if (book?.Loans is null || !book.Loans.Any())
-{
-  <p>Det finns ingen lånehistorik för den här boken.</p>
-}
-else 
-{
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Medlem</th>
-        <th>Lånedatum</th>
-        <th>Förfallodatum</th>
-        <th>Returnerad</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var loan in book.Loans.OrderByDescending(l => l.LoanDate))
-      {
-        <tr>
-          <td>@loan.Member?.Name</td>
-          <td>@loan.LoanDate.ToShortDateString()</td>
-          <td>@(loan.DueDate.ToShortDateString())</td>
-          <td>@(loan.ReturnDate?.ToShortDateString() ?? "Inte returnerad")</td>
-        </tr>
-      }
-    </tbody>
-  </table>
-}
-
-@if (book is not null && book.IsAvailable)
-{
-  <h2>Låna bok</h2>
-
-  <div class="mb-3">
-    <label for="member" class="form-label">Välj medlem</label>
-    <select id="member" class="form-select" @bind="selectedMemberId">
-      <option value="0">Välj en medlem</option>
-      @foreach (var member in members)
-      {
-        <option value="@member.Id">@member.Name</option>
-      }
-    </select>
-  </div>
-  <button class="btn btn-primary" @onclick="HandleBorrow">Låna Bok</button>
-}
-else if (book is not null)
-{
-  <p><strong>Boken är redan utlånad</strong></p>
-}
-
-@if (!string.IsNullOrWhiteSpace(message))
-{
-  <p class="text-success">@message</p>
-}
-
-@if (!string.IsNullOrWhiteSpace(errorMessage))
-{
-  <p class="text-danger">@errorMessage</p>
-}
-
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private Book? book;
-    private List<Member> members = new();
-    private int selectedMemberId;
-    private string? message;
-    private string? errorMessage;
-    
-    protected override async Task OnParametersSetAsync()
-    {
-        book = await BookRepository.GetByIdAsync(Id);
-        members = await Context.Members.OrderBy(m => m.Name).ToListAsync();
-    }
-    private async Task HandleBorrow()
-    {
-      errorMessage = null;
-      message = null;
-
-      if (selectedMemberId == 0)
-      {
-        errorMessage = "Vänligen välj en medlem.";
-        return;
-      }
-
-      try
-      {
-        await LoanService.BorrowAsync(Id, selectedMemberId);
-        message = "Boken har lånats ut!";
-        book = await BookRepository.GetByIdAsync(Id); // Uppdatera bokinformationen
-      }
-      catch (InvalidOperationException ex)
-      {
-        errorMessage = ex.Message;
-      }
-    }
-}
 
 @if (book == null)
 {
@@ -118,6 +15,8 @@ else if (book is not null)
 }
 else
 {
+  <h1>Bokdetaljer</h1>
+
   <div>
     <p><strong>ISBN:</strong> @book.ISBN</p>
     <p><strong>Titel:</strong> @book.Title</p>
@@ -125,4 +24,107 @@ else
     <p><strong>Utgivningsår:</strong> @book.PublishedYear</p>
     <p><strong>Status:</strong> @(book.IsAvailable ? "Tillgänglig" : "Utlånad")</p>
   </div>
+
+
+  <h2>Lånehistorik</h2>
+
+  @if (book?.Loans is null || !book.Loans.Any())
+  {
+    <p>Det finns ingen lånehistorik för den här boken.</p>
+  }
+  else
+  {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Medlem</th>
+          <th>Lånedatum</th>
+          <th>Förfallodatum</th>
+          <th>Returnerad</th>
+        </tr>
+      </thead>
+      <tbody> 
+@foreach (var loan in book.Loans.OrderByDescending(l => l.LoanDate))
+        {
+          <tr>
+            <td>@loan.Member?.Name</td>
+            <td>@loan.LoanDate.ToShortDateString()</td>
+            <td>@(loan.DueDate.ToShortDateString())</td>
+            <td>@(loan.ReturnDate?.ToShortDateString() ?? "Inte returnerad")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (book is not null && book.IsAvailable)
+  {
+    <h2>Låna bok</h2>
+
+    <div class="mb-3">
+      <label for="member" class="form-label">Välj medlem</label>
+      <select id="member" class="form-select" @bind="selectedMemberId">
+        <option value="0">Välj en medlem</option>
+@foreach (var member in members)
+        {
+          <option value="@member.Id">@member.Name</option>
+        }
+      </select>
+    </div>
+    <button class="btn btn-primary" @onclick="HandleBorrow">Låna Bok</button>
+  }
+  else if (book is not null)
+  {
+    <p><strong>Boken är redan utlånad</strong></p>
+  }
+
+  @if (!string.IsNullOrWhiteSpace(message))
+  {
+    <p class="text-success">@message</p>
+  }
+
+  @if (!string.IsNullOrWhiteSpace(errorMessage))
+  {
+    <p class="text-danger">@errorMessage</p>
+  }
+}
+
+
+@code {
+  [Parameter]
+  public int Id { get; set; }
+
+  private Book? book;
+  private List<Member> members = new();
+  private int selectedMemberId;
+  private string? message;
+  private string? errorMessage;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    book = await BookRepository.GetByIdAsync(Id);
+    members = await Context.Members.OrderBy(m => m.Name).ToListAsync();
+  }
+  private async Task HandleBorrow()
+  {
+    errorMessage = null;
+    message = null;
+
+    if (selectedMemberId == 0)
+    {
+      errorMessage = "Vänligen välj en medlem.";
+      return;
+    }
+
+    try
+    {
+      await LoanService.BorrowAsync(Id, selectedMemberId);
+      message = "Boken har lånats ut!";
+      book = await BookRepository.GetByIdAsync(Id); // Uppdatera bokinformationen
+    }
+    catch (InvalidOperationException ex)
+    {
+      errorMessage = ex.Message;
+    }
+  }
 }
